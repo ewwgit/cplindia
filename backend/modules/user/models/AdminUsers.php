@@ -23,6 +23,10 @@ class AdminUsers extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+	public  $username;
+	public  $email;
+	public  $password;
+	public  $created_at;
     public static function tableName()
     {
         return 'admin_users';
@@ -34,12 +38,13 @@ class AdminUsers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['userId', 'first_name', 'last_name', 'mobile', 'profileImage', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
+            [['username','email','password', 'first_name', 'last_name', 'mobile', 'profileImage'], 'required'],
             [['userId', 'createdBy', 'updatedBy'], 'integer'],
             [['profileImage'], 'string'],
-            [['createdDate', 'updatedDate'], 'safe'],
+            [['created_at','username','email','password','createdDate', 'updatedDate','first_name', 'last_name', 'mobile', 'profileImage','userId','createdBy', 'updatedBy','created_at'], 'safe'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['mobile'], 'string', 'max' => 20],
+        	[['username','email','password',], 'required' ,'on' =>'create'],
         ];
     }
 

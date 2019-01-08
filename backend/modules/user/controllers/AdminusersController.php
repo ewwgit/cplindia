@@ -74,12 +74,19 @@ class AdminusersController extends Controller
         if ($model->load(Yii::$app->request->post())) 
         {
         	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
-        	
-        	$name=$model->profileImage->name;
+        	$imageName = time().$model->profileImage->name;
         	$tempName=$model->profileImage->tempName;
         	$type=$model->profileImage->type;
         	$size=$model->profileImage->size;
         	$error=$model->profileImage->error;
+        	
+        	if(!(empty($model->profileImage)))
+        	{
+        	    $model->profileImage->saveAs('profileImage/'.$imageName);
+        		$model->profileImage = 'profileImage/'.$imageName;
+        	}
+
+        	
         	
         	$Usermodel->username=$model->username;
         	$Usermodel->email=$model->email;
@@ -89,24 +96,16 @@ class AdminusersController extends Controller
             $Usermodel->save();
         	
         	$id = Yii::$app->db->getLastInsertID();
-        	$model->profileImage=$name;
+        	$model->profileImage=$imageName;
         	$model->userId=$id;
         //	$model->createdBy =Yii::$app->user->identity;
         	$model->createdDate=Yii::$app->formatter->asDateTime('now', 'php:Y-m-d H:i:s');
-        	if(!(empty($model->profileImage)))
-        	{
-        		$imageName = time().$name;
-        		$model->profileImage->saveAs('profileImage/'.$name );
-        		$model->profileImage = 'profileImage/'.$name;
-        	}
         	$model->save();
         	
             return $this->redirect(['view', 'id' => $model->aduserId]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', [  'model' => $model,]);
     }
 
     /**
@@ -119,28 +118,25 @@ class AdminusersController extends Controller
     public function actionUpdate($id)
     {
              $model = $this->findModel($id);
+             $getimage = AdminUsers::find()->where(['aduserId'=>$id])->one();
+            // print_r($getimage->profileImage);exit;
              if ($model->load(Yii::$app->request->post()) ) {
         	
         	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
-        	 
-        	$name=$model->profileImage->name;
-        	$tempName=$model->profileImage->tempName;
-        	$type=$model->profileImage->type;
-        	$size=$model->profileImage->size;
-        	$error=$model->profileImage->error;
-          
-        	$model->profileImage=$name;
-        	//$model->updatedBy =Yii::$app->user->identity;
-//         	if(!(empty($model->profileImage)))
-//         	{
-        		
-//         		$imageName = time().$name;
-//         		//print_r($model->profileImage->saveAs('profileImage/'.$name ));exit;
-//         		$model->profileImage->saveAs('profileImage/'.$name );
-//         		$model->profileImage = 'profileImage/'.$name;
-//         	}
         	
-        	$model->update();
+        	if(!(empty($model->profileImage))){
+        		$name=$model->profileImage->name;
+        		$tempName=$model->profileImage->tempName;
+        		$type=$model->profileImage->type;
+        		$size=$model->profileImage->size;
+        		$error=$model->profileImage->error;
+        		$model->profileImage=$name;
+        		
+        	}else {
+        		$model->profileImage=$getimage->profileImage;
+        	}
+        	
+            $model->update();
         	
 //          $Usermodel = User::find()->where(['id'=>$model->userId])->one();
 //         	$Usermodel->email=$model->email;
@@ -151,6 +147,7 @@ class AdminusersController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+        		'getimage' => $getimage,
         ]);
     }
 

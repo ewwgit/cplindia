@@ -38,13 +38,13 @@ class AdminUsers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username','email','password', 'first_name', 'last_name', 'mobile', 'profileImage'], 'required'],
+            [[ 'first_name', 'last_name', 'mobile'], 'required'],
             [['userId', 'createdBy', 'updatedBy'], 'integer'],
             [['profileImage'], 'string'],
             [['created_at','username','email','password','createdDate', 'updatedDate','first_name', 'last_name', 'mobile', 'profileImage','userId','createdBy', 'updatedBy','created_at'], 'safe'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['mobile'], 'string', 'max' => 20],
-        	[['username','email','password',], 'required' ,'on' =>'create'],
+        	[['username','email','password','profileImage'], 'required' ,'on' =>'create'],
         ];
     }
 

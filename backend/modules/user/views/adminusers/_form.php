@@ -20,9 +20,7 @@ use SebastianBergmann\CodeCoverage\Report\PHP;
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'last_name')->textInput(['maxlength' => true]) ?>
     </div>
-<div class="form-group col-lg-6 col-sm-12">
-    <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
-    </div>
+
     
     <?php if($model->isNewRecord){?>
 <div class="form-group col-lg-6 col-sm-12">
@@ -34,21 +32,31 @@ use SebastianBergmann\CodeCoverage\Report\PHP;
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'password')->passwordInput()?>
     </div>
+    <div class="form-group col-lg-6 col-sm-12">
+    <?= $form->field($model, 'confirmpassword')->passwordInput()?>
+    </div>
 <?php } ?>
 <div class="form-group col-lg-6 col-sm-12">
+    <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
+    </div>
+<div class="form-group col-lg-6 col-sm-12">
+  <?php if($model->isNewRecord){?>
+    <?= $form->field($model, 'profileImage')->fileInput(); ?>
+    <?php }else {?>
     <?= $form->field($model, 'profileImage')->fileInput(); ?>
     <?PHP $image = $getimage->profileImage ;
     if(!(empty($image))){?>
     <img src="profileImage/<?php echo $image; ?>" width="150" height="150" />
    <?php  }else{ ?>
    <img src="profileImage/c9ad40e3e5f6afb9e2f79688022b1cee.jpg" width="150" height="150" />
- <?php   }?>
-  
+ <?php  } }?>
   
   
     </div>
 
-
+<div class="form-group col-lg-6 col-sm-12">
+    <?= $form->field($model, 'role')->dropdownList($model->roles,['prompt'=>'Select Role']);?>
+    </div>
 
 <div class="form-group col-lg-6 col-sm-12">
     <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

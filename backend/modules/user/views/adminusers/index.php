@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use common\models\User;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\user\models\AdminUsersSearch */
@@ -28,8 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'aduserId',
-            'userId',
+            //'aduserId',
+            //'userId',
+            [
+            		'attribute'=>'username',
+            		'label'=>'User Name',
+            		 'value' => function ($data) { 
+    		   $userData = User::find()->where(['id' => $data->userId])->one();
+    		       return $userData->username;
+    		        },
+            		
+    ],
             'first_name',
             'last_name',
             'mobile',

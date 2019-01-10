@@ -1,15 +1,15 @@
 <?php
 
-namespace backend\modules\user\models;
+namespace backend\modules\courses\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\user\models\AdminUsers;
+use backend\modules\courses\models\CoursesMaster;
 
 /**
- * AdminUsersSearch represents the model behind the search form of `backend\modules\user\models\AdminUsers`.
+ * CoursesMasterSearch represents the model behind the search form of `backend\modules\courses\models\CoursesMaster`.
  */
-class AdminUsersSearch extends AdminUsers
+class CoursesMasterSearch extends CoursesMaster
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class AdminUsersSearch extends AdminUsers
     public function rules()
     {
         return [
-            [['aduserId', 'userId', 'createdBy', 'updatedBy'], 'integer'],
-            [['first_name', 'last_name', 'mobile', 'profileImage', 'createdDate', 'updatedDate','username'], 'safe'],
+            [['courseId', 'createdBy', 'updatedBy'], 'integer'],
+            [['courseName', 'description', 'content', 'courseImage', 'attachmentUrl', 'fileType', 'status', 'createdDate', 'updatedDate'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class AdminUsersSearch extends AdminUsers
      */
     public function search($params)
     {
-        $query = AdminUsers::find();
+        $query = CoursesMaster::find();
 
         // add conditions that should always apply here
 
@@ -58,18 +58,20 @@ class AdminUsersSearch extends AdminUsers
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'aduserId' => $this->aduserId,
-            'userId' => $this->userId,
+            'courseId' => $this->courseId,
             'createdBy' => $this->createdBy,
             'updatedBy' => $this->updatedBy,
             'createdDate' => $this->createdDate,
             'updatedDate' => $this->updatedDate,
         ]);
 
-        $query->andFilterWhere(['like', 'first_name', $this->first_name])
-            ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'mobile', $this->mobile])
-            ->andFilterWhere(['like', 'profileImage', $this->profileImage]);
+        $query->andFilterWhere(['like', 'courseName', $this->courseName])
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'content', $this->content])
+            ->andFilterWhere(['like', 'courseImage', $this->courseImage])
+            ->andFilterWhere(['like', 'attachmentUrl', $this->attachmentUrl])
+            ->andFilterWhere(['like', 'fileType', $this->fileType])
+            ->andFilterWhere(['like', 'status', $this->status]);
 
         return $dataProvider;
     }

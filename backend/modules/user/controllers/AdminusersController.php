@@ -8,6 +8,7 @@ use backend\modules\user\models\AdminUsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\modules\roles\models\Roles;
 
 
 use yii\web\UploadedFile;
@@ -70,36 +71,42 @@ class AdminusersController extends Controller
     {
         $model = new AdminUsers();
         $Usermodel = new User();
+        $roleinfo = Roles::find()->where('roleId>1')->all();
+        $roles = array();
+        for($i=0;$i<count($roleinfo);$i++)
+        {
+        	$roles[$roleinfo[$i]['roleId']] = $roleinfo[$i]['role_name'];
+        }
+        $model->roles = $roles;
         $model->scenario = 'create';
         if ($model->load(Yii::$app->request->post())) 
         {
-        	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
-        	$imageName = time().$model->profileImage->name;
-        	$tempName=$model->profileImage->tempName;
-        	$type=$model->profileImage->type;
-        	$size=$model->profileImage->size;
-        	$error=$model->profileImage->error;
-        	
-        	if(!(empty($model->profileImage)))
-        	{
-        	    $model->profileImage->saveAs('profileImage/'.$imageName);
-        		$model->profileImage = 'profileImage/'.$imageName;
-        	}
-
-        	
-        	
         	$Usermodel->username=$model->username;
         	$Usermodel->email=$model->email;
-        	$Usermodel->password=$model->password;		
+        	$Usermodel->password=$model->password;
         	$Usermodel->status=10;
         	$Usermodel->created_at=Yii::$app->formatter->asDateTime('now', 'php:Y-m-d H:i:s');
-            $Usermodel->save();
+        	$Usermodel->role = $model->role;
+        	$Usermodel->save();
+        	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
         	
         	$id = Yii::$app->db->getLastInsertID();
-        	$model->profileImage=$imageName;
         	$model->userId=$id;
-        //	$model->createdBy =Yii::$app->user->identity;
-        	$model->createdDate=Yii::$app->formatter->asDateTime('now', 'php:Y-m-d H:i:s');
+        	if(!(empty($model->profileImage)))
+        	{
+        		$imageName = time().$model->profileImage->name;
+        		$tempName=$model->profileImage->tempName;
+        		$type=$model->profileImage->type;
+        		$size=$model->profileImage->size;
+        		$error=$model->profileImage->error;
+        	    $model->profileImage->saveAs('profileImage/'.$imageName);
+        		$model->profileImage = 'profileImage/'.$imageName;
+        		$model->profileImage=$imageName;
+        	}
+        	$model->createdDate=date('Y-m-d H:i:s');
+        	
+        	
+        	
         	$model->save();
         	
             return $this->redirect(['view', 'id' => $model->aduserId]);
@@ -118,12 +125,26 @@ class AdminusersController extends Controller
     public function actionUpdate($id)
     {
              $model = $this->findModel($id);
+             $admininfo = User::find()->where(['id' =>$model->userId])->one();
+             //print_r($admininfo->role); exit();
              $getimage = AdminUsers::find()->where(['aduserId'=>$id])->one();
+             $roleinfo = Roles::find()->where('roleId>1')->all();
+             $roles = array();
+             for($i=0;$i<count($roleinfo);$i++)
+             {
+             	$roles[$roleinfo[$i]['roleId']] = $roleinfo[$i]['role_name'];
+             }
+             $model->roles = $roles;
+             if(!empty($admininfo))
+             {
+             	$model->role = $admininfo->role;
+             }
             // print_r($getimage->profileImage);exit;
              if ($model->load(Yii::$app->request->post()) ) {
         	
         	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
-        	
+        	$admininfo->role = $model->role ;
+        	$admininfo->save();
         	if(!(empty($model->profileImage))){
         		$name=$model->profileImage->name;
         		$tempName=$model->profileImage->tempName;
@@ -137,11 +158,6 @@ class AdminusersController extends Controller
         	}
         	
             $model->update();
-        	
-//          $Usermodel = User::find()->where(['id'=>$model->userId])->one();
-//         	$Usermodel->email=$model->email;
-//         	$Usermodel->update();
-        	
             return $this->redirect(['view', 'id' => $model->aduserId]);
         }
 

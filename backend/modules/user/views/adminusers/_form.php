@@ -46,9 +46,9 @@ use SebastianBergmann\CodeCoverage\Report\PHP;
     <?= $form->field($model, 'profileImage')->fileInput(); ?>
     <?PHP $image = $getimage->profileImage ;
     if(!(empty($image))){?>
-    <img src="profileImage/<?php echo $image; ?>" width="150" height="150" />
+    <img src="profileImage/<?php echo $image; ?>" width="90" height="90" />
    <?php  }else{ ?>
-   <img src="profileImage/c9ad40e3e5f6afb9e2f79688022b1cee.jpg" width="150" height="150" />
+   <img src="profileImage/c9ad40e3e5f6afb9e2f79688022b1cee.jpg" width="90" height="90" />
  <?php  } }?>
   
   

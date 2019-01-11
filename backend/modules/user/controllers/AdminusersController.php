@@ -71,6 +71,7 @@ class AdminusersController extends Controller
     {
         $model = new AdminUsers();
         $Usermodel = new User();
+        
         $roleinfo = Roles::find()->where('roleId>1')->all();
         $roles = array();
         for($i=0;$i<count($roleinfo);$i++)
@@ -81,6 +82,8 @@ class AdminusersController extends Controller
         $model->scenario = 'create';
         if ($model->load(Yii::$app->request->post())) 
         {
+        	/**User**/
+        	
         	$Usermodel->username=$model->username;
         	$Usermodel->email=$model->email;
         	$Usermodel->password=$model->password;
@@ -88,8 +91,10 @@ class AdminusersController extends Controller
         	$Usermodel->created_at=Yii::$app->formatter->asDateTime('now', 'php:Y-m-d H:i:s');
         	$Usermodel->role = $model->role;
         	$Usermodel->save();
-        	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
         	
+        	/**AdminUsers**/
+        	
+        	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
         	$id = Yii::$app->db->getLastInsertID();
         	$model->userId=$id;
         	if(!(empty($model->profileImage)))
@@ -104,9 +109,6 @@ class AdminusersController extends Controller
         		$model->profileImage=$imageName;
         	}
         	$model->createdDate=date('Y-m-d H:i:s');
-        	
-        	
-        	
         	$model->save();
         	
             return $this->redirect(['view', 'id' => $model->aduserId]);
@@ -126,7 +128,6 @@ class AdminusersController extends Controller
     {
              $model = $this->findModel($id);
              $admininfo = User::find()->where(['id' =>$model->userId])->one();
-             //print_r($admininfo->role); exit();
              $getimage = AdminUsers::find()->where(['aduserId'=>$id])->one();
              $roleinfo = Roles::find()->where('roleId>1')->all();
              $roles = array();
@@ -135,22 +136,25 @@ class AdminusersController extends Controller
              	$roles[$roleinfo[$i]['roleId']] = $roleinfo[$i]['role_name'];
              }
              $model->roles = $roles;
+             
              if(!empty($admininfo))
              {
              	$model->role = $admininfo->role;
              }
-            // print_r($getimage->profileImage);exit;
+            
              if ($model->load(Yii::$app->request->post()) ) {
         	
         	$model->profileImage = UploadedFile::getInstance($model, 'profileImage');
         	$admininfo->role = $model->role ;
         	$admininfo->save();
         	if(!(empty($model->profileImage))){
-        		$name=$model->profileImage->name;
+        		$name=time().$model->profileImage->name;
         		$tempName=$model->profileImage->tempName;
         		$type=$model->profileImage->type;
         		$size=$model->profileImage->size;
         		$error=$model->profileImage->error;
+        		$model->profileImage->saveAs('profileImage/'.$name);
+        		$model->profileImage = 'profileImage/'.$name;
         		$model->profileImage=$name;
         		
         	}else {

@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="courses-master-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?php // Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->courseId], ['class' => 'btn btn-primary']) ?>
@@ -29,16 +29,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'courseId',
+           // 'courseId',
             'courseName',
             'description:ntext',
             'content:ntext',
-            'courseImage:ntext',
+          //  'courseImage:ntext',
+        		[
+        		'attribute'=>'courseImage',
+        		'value'=>$model->courseImage,
+        		'format' => ['image',['width'=>'90','height'=>'90']],
+        		],
             'attachmentUrl:ntext',
             'fileType',
             'status',
-            'createdBy',
-            'updatedBy',
+           // 'createdBy',
+           // 'updatedBy',
             'createdDate',
             'updatedDate',
         ],

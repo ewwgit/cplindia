@@ -36,7 +36,7 @@ class CoursesMaster extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['courseName', 'description', 'content', 'courseImage', 'attachmentUrl', 'fileType', 'status', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
+            [['courseName', 'description', 'content','fileType', 'status', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
             [['description', 'content', 'courseImage', 'attachmentUrl', 'status'], 'string'],
             [['createdBy', 'updatedBy'], 'integer'],
             [['createdDate', 'updatedDate'], 'safe'],
@@ -44,6 +44,7 @@ class CoursesMaster extends \yii\db\ActiveRecord
         	[['courseName', 'description', 'content', 'courseImage', 'attachmentUrl', 'fileType', 'status', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'safe'],
         	['attachmentUrl', 'file', 'skipOnEmpty' => true, 'extensions' => 'pdf,docx,doc','maxSize' => 1024 * 1024 * 1],
         	[['courseImage'],'file','extensions' => 'gif, jpg, png'],
+        	[['courseImage', 'attachmentUrl'],'required','on'=>'create']
         ];
     }
 

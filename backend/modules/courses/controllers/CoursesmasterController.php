@@ -66,6 +66,7 @@ class CoursesmasterController extends Controller
     public function actionCreate()
     {
         $model = new CoursesMaster();
+        $model->scenario = 'create';
 
         if ($model->load(Yii::$app->request->post())) {
         	
@@ -82,7 +83,7 @@ class CoursesmasterController extends Controller
         		$type=$model->attachmentUrl->type;
         		$docimg = time().$model->attachmentUrl->name;
         		$model->attachmentUrl->saveAs('coursedocs/'.$docimg );
-        		$model->attachmentUrl = 'coursedocs/'.$docimg;
+        		$model->attachmentUrl = $docimg;
         		$model->fileType = $type;
         	}
        	$model->createdDate =  date("Y-m-d H:i:s");
@@ -109,13 +110,39 @@ class CoursesmasterController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        
+        $CoursesMaster=CoursesMaster::find()->where(['courseId'=>$id])->one();
+        
+        if ($model->load(Yii::$app->request->post()) ) {
+       	   
+        $model->courseImage = UploadedFile::getInstance($model,'courseImage');
+        if(!(empty($model->courseImage)))
+         {
+	      $imageName = time().$model->courseImage->name;
+	      $model->courseImage->saveAs('courseimages/'.$imageName );
+	      $model->courseImage = 'courseimages/'.$imageName;
+         }else{
+	      $model->courseImage=$CoursesMaster->courseImage;
+          }
+          
+        $model->attachmentUrl = UploadedFile::getInstance($model,'attachmentUrl');
+        if(!(empty($model->attachmentUrl)))
+         {
+	      $type=$model->attachmentUrl->type;
+	      $docimg = time().$model->attachmentUrl->name;
+	      $model->attachmentUrl->saveAs('coursedocs/'.$docimg );
+	      $model->attachmentUrl = $docimg;
+	      $model->fileType = $type;
+         }else{
+	      $model->attachmentUrl=$CoursesMaster->attachmentUrl;
+          }
+        	$model->save();
             return $this->redirect(['view', 'id' => $model->courseId]);
         }
 
         return $this->render('update', [
             'model' => $model,
+        		'CoursesMaster'=>$CoursesMaster,
         ]);
     }
 

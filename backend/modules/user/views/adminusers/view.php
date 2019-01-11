@@ -35,12 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'first_name',
             'last_name',
             'mobile',
-           //'profileImage:ntext',
+          // 'profileImage:ntext',
         		
         		[
         		'attribute'=>'profileImage',
         		'value'=> 'profileImage/'.$model->profileImage,
-        		'format' => ['image',['width'=>'100','height'=>'100']],
+        		'format' => ['image',['width'=>'90','height'=>'90']],
         		],
           //  'createdBy',
          //   'updatedBy',

@@ -24,13 +24,34 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'content')->textarea(['rows' => 3]) ?>
     </div>
-<div class="form-group col-lg-6 col-sm-12">
 
+    <div class="form-group col-lg-6 col-sm-12">
+
+  <?php if($model->isNewRecord){?>
     <?= $form->field($model, 'courseImage')->fileInput(); ?>
-    </div>
-<div class="form-group col-lg-6 col-sm-12">
+    <?php }else {?>
+    <?= $form->field($model, 'courseImage')->fileInput(); ?>
+    <?PHP $image = $CoursesMaster->courseImage ;
+    if(!(empty($image))){?>
+    <img src="<?php echo $image; ?>" width="90" height="90" />
+   <?php  }else{ ?>
+   <img src="courseimage/c9ad40e3e5f6afb9e2f79688022b1cee.jpg" width="90" height="90" />
+ <?php  } }?>
+ </div>
+ <div class="form-group col-lg-6 col-sm-12">
+
+  <?php if($model->isNewRecord){?>
     <?= $form->field($model, 'attachmentUrl')->fileInput(); ?>
-    </div>
+    <?php }else {?>
+    <?= $form->field($model, 'attachmentUrl')->fileInput(); ?>
+    <?PHP $image = $CoursesMaster->attachmentUrl ;
+    if(!(empty($image))){?>
+    <?php echo $image; ?>
+   <?php  }else{ ?>
+   <?php echo ''; ?>
+ <?php  } }?>
+ </div>
+
 
 <div class="form-group col-lg-6 col-sm-12">
 

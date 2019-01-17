@@ -48,7 +48,7 @@
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/user/adminusers'],],
                 		],
                 		],
-                		[
+                	/* 	[
                 		'label' => 'Courses',
                 		'icon' => 'users',
                 		'url' => ['/courses/courses'],
@@ -56,7 +56,7 @@
                 				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/courses/coursesmaster/create'],],
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/courses/coursesmaster'],],
                 		],
-                		],
+                		], */
                 ],
             ]
         ) ?>

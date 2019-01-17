@@ -18,9 +18,9 @@ return [
     		'user' => [
     				'class' => 'backend\modules\user\Module',
     		],
-    		'courses' => [
+    	/* 	'courses' => [
     				'class' => 'backend\modules\courses\Module',
-    		],
+    		], */
     ],
     'components' => [
         'request' => [

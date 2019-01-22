@@ -48,6 +48,15 @@
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/user/adminusers'],],
                 		],
                 		],
+                		[
+                		'label' => 'Courses',
+                		'icon' => 'users',
+                		'url' => ['/semisters/semisters'],
+                		'items' => [
+                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/semisters/semisters/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/semisters/semisters'],],
+                		],
+                		],
                 	/* 	[
                 		'label' => 'Courses',
                 		'icon' => 'users',

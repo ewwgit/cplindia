@@ -18,9 +18,16 @@ return [
     		'user' => [
     				'class' => 'backend\modules\user\Module',
     		],
-    	/* 	'courses' => [
+    		'semisters' => [
+    				'class' => 'backend\modules\semisters\Module',
+    		],
+    		'courses' => [
     				'class' => 'backend\modules\courses\Module',
-    		], */
+    		],
+    		'subject' => [
+    				'class' => 'backend\modules\subject\Module',
+    		],
+    		
     ],
     'components' => [
         'request' => [

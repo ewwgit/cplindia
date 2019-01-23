@@ -8,7 +8,7 @@
                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p>Alexander Pierce</p>
+                <p>Admin</p>
 
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -50,11 +50,29 @@
                 		],
                 		[
                 		'label' => 'Courses',
-                		'icon' => 'users',
+                		'icon' => 'book',
                 		'url' => ['/semisters/semisters'],
                 		'items' => [
                 				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/semisters/semisters/create'],],
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/semisters/semisters'],],
+                		],
+                		],
+                		[
+                		'label' => 'Guest Lectures',
+                		'icon' => 'book',
+                		'url' => ['/lecture/guestlectures'],
+                		'items' => [
+                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/lecture/guestlectures/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/lecture/guestlectures'],],
+                		],
+                		],
+                		[
+                		'label' => 'Assignments',
+                		'icon' => 'book',
+                		'url' => ['/assignment/assignment'],
+                		'items' => [
+                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/assignment/assignment/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/assignment/assignment'],],
                 		],
                 		],
                 	/* 	[

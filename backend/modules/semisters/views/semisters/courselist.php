@@ -37,7 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
             }		
             ],
             //'sem_id',
-            'name',
+            [
+            'attribute'=>'name',
+            'label'=>'Course Name',
+            		],
+            //'name',
             'description:ntext',
             //'createdBy',
             //'updatedBy',
@@ -48,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
            
         	 	['class' => 'yii\grid\ActionColumn',
         		'controller' => 'courses',
+        	 			'template' => '{view} {update} {delete}',
         		'buttons' => [
         				'view' => function ($url,$data) {
         					$url = Url::to(['/courses/courses/view','id'=>$data->courseId]);

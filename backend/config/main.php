@@ -26,7 +26,14 @@ return [
     		],
     		'subject' => [
     				'class' => 'backend\modules\subject\Module',
+    		], 
+    		'lecture' => [
+    				'class' => 'backend\modules\lecture\Module',
     		],
+    		'assignment' => [
+    				'class' => 'backend\modules\assignment\Module',
+    		],
+    		
     		
     ],
     'components' => [

@@ -5,19 +5,22 @@ use yii\widgets\DetailView;
 use common\models\User;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\semisters\models\Semisters */
+/* @var $model backend\modules\workshop\models\Workshop */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Semisters', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Workshops', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="semisters-view">
+<div class="workshop-view">
 <div class="box box-primary">
 <div class="box-body"> 
+
+    
+
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->sem_id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->sem_id], [
+        <?= Html::a('Update', ['update', 'id' => $model->wId], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->wId], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -29,12 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-           // 'sem_id',
+            'wId',
             'name',
             'description:ntext',
             'from_date',
             'to_date',
-        		[
+                  		[
         		'attribute'=>'createdBy',
         		'value'=>function($data){
         			$udata = User::find()->where(['id'=>$data->createdBy])->one();
@@ -50,8 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
         		
         				}
         		],
-            //'createdBy',
-            //'updatedBy',
             'createdDate',
             'updatedDate',
             'status',

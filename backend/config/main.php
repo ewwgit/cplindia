@@ -33,6 +33,15 @@ return [
     		'assignment' => [
     				'class' => 'backend\modules\assignment\Module',
     		],
+    		'workshop' => [
+    				'class' => 'backend\modules\workshop\Module',
+    		], 
+    		'project' => [
+            'class' => 'backend\modules\project\Module',
+        ],
+    		'quiz' => [
+    				'class' => 'backend\modules\quiz\Module',
+    		],
     		
     		
     ],

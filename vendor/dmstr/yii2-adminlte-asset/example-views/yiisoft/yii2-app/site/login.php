@@ -62,7 +62,7 @@ $fieldOptions2 = [
         </div> -->
         <!-- /.social-auth-links -->
 
-        <a href="#">I forgot my password</a><br>
+        <a href="<?php echo Yii::$app->urlManager->createUrl(['site/request-password-reset']);?>">I forgot my password</a><br>
       <!--   <a href="register.html" class="text-center">Register a new membership</a> -->
 
     </div>

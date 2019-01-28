@@ -41,10 +41,10 @@ class QuizMaster extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sem_id', 'courseId', 'name', 'description', 'validFrom', 'validTime', 'quizTime', 'totalMarks', 'passMarks', 'eachquestioncarries', 'status', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
+            [['sem_id', 'courseId', 'name', 'description', 'validFrom', 'validTo', 'quizTime', 'totalMarks', 'passMarks', 'eachquestioncarries', 'status', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
             //[['sem_id', 'courseId', 'totalMarks', 'passMarks', 'eachquestioncarries', 'createdBy', 'updatedBy'], 'integer'],
             [['description', 'status'], 'string'],
-            [['validFrom', 'validTime', 'createdDate', 'updatedDate'], 'safe'],
+            [['validFrom', 'validTo', 'createdDate', 'updatedDate'], 'safe'],
             [['name'], 'string', 'max' => 250],
            // [['quizTime'], 'string', 'max' => 5],
         ];
@@ -62,7 +62,7 @@ class QuizMaster extends \yii\db\ActiveRecord
             'name' => 'Name',
             'description' => 'Description',
             'validFrom' => 'Valid From',
-            'validTime' => 'Valid Time',
+            'validTime' => 'Valid To',
             'quizTime' => 'Quiz Time in Minutes',
             'totalMarks' => 'Total Marks',
             'passMarks' => 'Pass Marks',

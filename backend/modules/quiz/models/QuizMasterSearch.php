@@ -18,7 +18,7 @@ class QuizMasterSearch extends QuizMaster
     {
         return [
             [['quizId', 'sem_id', 'courseId', 'totalMarks', 'passMarks', 'eachquestioncarries', 'createdBy', 'updatedBy'], 'integer'],
-            [['name', 'description', 'validFrom', 'validTime', 'quizTime', 'status', 'createdDate', 'updatedDate'], 'safe'],
+            [['name', 'description', 'validFrom', 'validTo', 'quizTime', 'status', 'createdDate', 'updatedDate'], 'safe'],
         ];
     }
 
@@ -62,7 +62,7 @@ class QuizMasterSearch extends QuizMaster
             'sem_id' => $this->sem_id,
             'courseId' => $this->courseId,
             'validFrom' => $this->validFrom,
-            'validTime' => $this->validTime,
+            'validTo' => $this->validTo,
             'totalMarks' => $this->totalMarks,
             'passMarks' => $this->passMarks,
             'eachquestioncarries' => $this->eachquestioncarries,

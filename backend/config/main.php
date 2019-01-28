@@ -42,6 +42,9 @@ return [
     		'quiz' => [
     				'class' => 'backend\modules\quiz\Module',
     		],
+    		'questions' => [
+    				'class' => 'backend\modules\questions\Module',
+    		],
     		
     		
     ],

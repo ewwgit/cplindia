@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'description:ntext',
             'validFrom',
-            'validTime',
+            'validTo',
             'quizTime',
             'totalMarks',
             'passMarks',

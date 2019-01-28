@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\modules\semisters\models\Semisters;
 use backend\modules\courses\models\Courses;
+use backend\modules\questions\models\QuestionsMasterSearch;
 
 /**
  * QuizmasterController implements the CRUD actions for QuizMaster model.
@@ -54,9 +55,14 @@ class QuizmasterController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+      $searchModel = new QuestionsMasterSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    	
+    	return $this->render('questionlist', [
+    			'searchModel' => $searchModel,
+    			'dataProvider' => $dataProvider,
+    		    'quizId' => $id
+    	]);
     }
 
     /**

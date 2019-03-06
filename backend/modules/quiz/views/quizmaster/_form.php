@@ -46,7 +46,7 @@ use yii\helpers\Url;
     </div>
         <div class="form-group col-lg-6 col-sm-12">
 
-    <?= $form->field($model, 'validTime')->widget ( DatePicker::classname (), [ 'options' => [ 'placeholder' => 'Enter Valid to ...' ],
+    <?= $form->field($model, 'validTo')->widget ( DatePicker::classname (), [ 'options' => [ 'placeholder' => 'Enter Valid to ...' ],
                 		'value'=>date("Y-m-d"), 'pluginOptions' => ['autoclose' => true ,'format' => 'yyyy-mm-dd',] ] ) ?> 
     </div>
         <div class="form-group col-lg-6 col-sm-12">
@@ -67,7 +67,7 @@ use yii\helpers\Url;
     </div>
         <div class="form-group col-lg-6 col-sm-12">
 
-    <?= $form->field($model, 'status')->dropDownList([ 'Active' => 'Active', 'In-active' => 'In-active', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'status')->dropDownList([ 'Active' => 'Active', 'In-active' => 'In-active', ], ['prompt' => 'Select Quiz Status']) ?>
 
 </div>
        <div class="form-group col-lg-6 col-sm-12">
@@ -79,3 +79,9 @@ use yii\helpers\Url;
 </div>
 </div>
 </div>
+<style>
+.help-block {
+    height: 5px;
+}
+</style>	     
+

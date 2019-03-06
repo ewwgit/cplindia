@@ -45,6 +45,10 @@ return [
     		'questions' => [
     				'class' => 'backend\modules\questions\Module',
     		],
+    		'events' => [
+    				'class' => 'backend\modules\events\Module',
+    		],
+    	
     		
     		
     ],

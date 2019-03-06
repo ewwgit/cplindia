@@ -9,7 +9,7 @@ use  backend\modules\courses\models\Courses;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\subject\models\SubjectsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
+$this->params['breadcrumbs'][] = ['label' => 'Courses', 'url' => ['/semisters/semisters/view','id'=>$sid]];
 $this->title = 'Subjects';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -17,6 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="box box-primary">
 <div class="box-body">
+    <?php if(Yii::$app->user->identity->role == 1)
+    {
+    	?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -46,17 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
            // 'name',
             'description',
            // 'attachmentUrl:ntext',
-            [
-            'attribute'=>'attachmentUrl',
-            'label' => 'Document',
-            'value'=>function($data)
-            		{
-            		$ccdata ='<div class="form-group"><a class="fa fa-download fa-3x" href="'.Url::to(["/subject/subjects/download","file"=>basename ($data->attachmentUrl)]).'"></a>'. basename ($data->attachmentUrl).'</div>';
-            		return $ccdata;
-        					},
-            'format' => 'html'
-            
-            		],
+          
             //'createdBy',
             //'updatedBy',
             //'createdDate',
@@ -64,31 +57,86 @@ $this->params['breadcrumbs'][] = $this->title;
 
            // ['class' => 'yii\grid\ActionColumn'],
         		['class' => 'yii\grid\ActionColumn',
-        		'controller' => 'assessmentset',
+        		'controller' => 'subject',
+        		//'header'=>'Subjects View',
         		'buttons' => [
         				'view' => function ($url,$data) {
         					$url = Url::to(['/subject/subjects/view','id'=>$data->subId]);
         					return Html::a(
         							'<span class="glyphicon glyphicon-eye-open"></span>',
-        							$url);
+        							$url,[ 
+                        'title' => 'view',]);
         				},
         				'update' => function ($url,$data) {
         					$url = Url::to(['/subject/subjects/update','id'=>$data->subId]);
         					return Html::a(
         							'<span class="glyphicon glyphicon-pencil"></span>',
-        							$url);
+        							$url,[
+                        'title' => 'update',]);
         				},
         				'delete' => function ($url,$data) {
         					$url = Url::to(['/subject/subjects/delete','id'=>$data->subId]);
         					return Html::a(
         							'<span class="glyphicon glyphicon-trash"></span>',
-        							$url,['data-confirm' => "Are you sure you want to delete this chapter?", 'data-method'=>"post"]);
+        							$url,['data-confirm' => "Are you sure you want to delete this subject?", 'data-method'=>"post",'title'=>'delete']);
         				},
         		
         				],
         				],
         ],
     ]); ?>
+      <?php }else {?>
+      
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            //'subId',
+        		[
+        		'attribute'=>'courseId',
+        		'label'=>'Course Name',
+        		'value'=>function($data){
+        			$cdata = Courses::find()->where(['courseId'=>$data->courseId])->one();
+        			return $cdata->name;
+        		}
+        		],
+        		[
+        				'attribute'=>'name',
+        				'label'=>'Subject Name',
+        		],
+        		//'courseId',
+           // 'name',
+            'description',
+           // 'attachmentUrl:ntext',
+          
+            //'createdBy',
+            //'updatedBy',
+            //'createdDate',
+            //'updatedDate',
+
+           // ['class' => 'yii\grid\ActionColumn'],
+        		['class' => 'yii\grid\ActionColumn',
+        		'controller' => 'subjects',
+        		//'header'=>'Subjects View',
+        		'template' => '{view}',
+        		'buttons' => [
+        				'view' => function ($url,$data) {
+        					$url = Url::to(['/subject/subjects/view','id'=>$data->subId]);
+        					return Html::a(
+        							'<span class="glyphicon glyphicon-eye-open"></span>',
+        							$url,[// to prevent breaking table on hover
+                        'title' => 'subjects view',]);
+        				},
+        				
+        		
+        				],
+        				],
+        ],
+    ]); ?>
+    <?php }?>
+      
 </div>
 </div>
 </div>

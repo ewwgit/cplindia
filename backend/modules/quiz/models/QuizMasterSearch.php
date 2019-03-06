@@ -5,6 +5,7 @@ namespace backend\modules\quiz\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\quiz\models\QuizMaster;
+use Yii;
 
 /**
  * QuizMasterSearch represents the model behind the search form of `backend\modules\quiz\models\QuizMaster`.
@@ -40,7 +41,11 @@ class QuizMasterSearch extends QuizMaster
      */
     public function search($params)
     {
-        $query = QuizMaster::find();
+    	if(Yii::$app->user->identity->role == 4){
+        $query = QuizMaster::find()->where(['status'=>'Active']);
+    	}else{
+    		$query = QuizMaster::find();
+    	}
 
         // add conditions that should always apply here
 

@@ -2,11 +2,13 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\modules\roles\models\Roles;
+
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\user\models\AdminUsers */
 
-$this->title = $model->aduserId;
+$this->title = $model->first_name;
 $this->params['breadcrumbs'][] = ['label' => 'Admin Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -31,21 +33,42 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
         //    'aduserId',
-            'userId',
+           // 'userId',
             'first_name',
             'last_name',
             'mobile',
+        		'username',
+        		'email',
+        		'role',
           // 'profileImage:ntext',
         		
         		[
         		'attribute'=>'profileImage',
-        		'value'=> 'profileImage/'.$model->profileImage,
+        		'value'=> $model->profileImage,
         		'format' => ['image',['width'=>'90','height'=>'90']],
         		],
-          //  'createdBy',
-         //   'updatedBy',
-            'createdDate',
-            'updatedDate',
+         	[
+        		'attribute' => 'createdBy',
+        	
+        		'value' =>  Roles::getUsername($model->createdBy),
+        		],
+        		[
+        		'attribute' => 'updatedBy',
+        		 
+        		'value' =>  Roles::getUsername($model->updatedBy),
+        		],
+        		[
+        		'attribute' => 'createdDate',
+        		
+        		'format' =>  ['date', 'php:d/m/Y H:i:s'],
+        		],
+        		[
+        				'attribute' => 'updatedDate',
+        		
+        				'format' =>  ['date', 'php:d/m/Y H:i:s'],
+        		],
+            //'createdDate',
+            //'updatedDate',
         ],
     ]) ?>
 

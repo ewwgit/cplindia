@@ -2,12 +2,14 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use backend\modules\questions\models\QuestionsMaster;
+use backend\modules\quiz\models\QuizMaster;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\questions\models\QuestionsMaster */
 
-$this->title = $model->qId;
-$this->params['breadcrumbs'][] = ['label' => 'Questions Masters', 'url' => ['index']];
+$this->title = $model->question;
+$this->params['breadcrumbs'][] = ['label' => 'Questions Masters', 'url' => ['/quiz/quizmaster/view', 'id' => $model->quizId]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -27,18 +29,63 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+     <?php $options =  QuestionsMaster::getOptions($model->qId);
+        $answers =  QuestionsMaster::getAnswers($model->qId);
+        $answersData = '';
+        foreach ($answers as $ans)
+        {
+        	$answersData.= $ans['answerText'].'<br />';
+        }
+       // print_r($options['0']['options']);exit();
+        ?>
 
-    <?= DetailView::widget([
+              <?= DetailView::widget([
         'model' => $model,
+              	
         'attributes' => [
+        		
             'qId',
-            'quizId',
+           [
+        		'attribute'=>'quizId',
+        		'value'=>function($data)
+        				{
+        					
+        				$qdata = QuizMaster::find()->where(['quizId'=>$data->quizId])->one();
+        				//print_r($qdata); exit;
+        				return $qdata->name;
+        				}
+        		],
             'question:ntext',
+        		[
+        		'attribute'=>'optionsOne',
+        		'value'=>$options['0']['options']
+        		],
+        		[
+        		'attribute'=>'optionsTwo',
+        		'value'=>$options['1']['options']
+        		],
+        		[
+        		'attribute'=>'optionsThree',
+        		'value'=>$options['2']['options']
+        		],
+        		[
+        		'attribute'=>'optionsFour',
+        		'value'=>$options['3']['options']
+        		],
+        	
+        	
+        		[
+        		'attribute'=>'answers',
+        		'format' => 'html',
+        		'value'=>$answersData
+        		],
+        	//'name:ntext',
             'status',
             'createdBy',
             'updatedBy',
             'createdDate',
             'updatedDate',
+            'ipAddress',
         ],
     ]) ?>
 

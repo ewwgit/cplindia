@@ -40,7 +40,7 @@ class QuestionsMasterSearch extends QuestionsMaster
      */
     public function search($params)
     {
-        $query = QuestionsMaster::find();
+        $query = QuestionsMaster::find()->where(['quizId'=>$params['id']]);
 
         // add conditions that should always apply here
 

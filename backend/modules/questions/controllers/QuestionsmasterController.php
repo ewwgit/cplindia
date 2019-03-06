@@ -8,6 +8,13 @@ use backend\modules\questions\models\QuestionsMasterSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\modules\questions\models\QuestionMasterMain;
+use backend\modules\quiz\models\QuizMaster;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use backend\modules\questions\models\QuestionsOptions;
+use backend\modules\questions\models\QuestionsAnswers;
 
 /**
  * QuestionsmasterController implements the CRUD actions for QuestionsMaster model.
@@ -25,6 +32,7 @@ class QuestionsmasterController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
+            		
             ],
         ];
     }
@@ -62,17 +70,34 @@ class QuestionsmasterController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($qId)
+    public function actionCreate($quzId)
     {
-        $model = new QuestionsMaster();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->qId]);
+        $model = new QuestionMasterMain();
+        $questionsModel = new QuestionsMaster();
+         
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+        	//echo 'hello'; exit;
+        	 
+        	Yii::$app->response->format = Response::FORMAT_JSON;
+        	if (!$model->validate()) {
+        		return ActiveForm::validate($model);
+        	}
+        	//echo '<pre>';print_r(Yii::$app->request->post());exit;
+        	//	print_r($model->questionsoptions); exit;
+        	$questions = $model->questionSave();
+        	 
+        	Yii::$app->getSession()->setFlash('success', 'You are successfully added Questions.');
+        	  return $this->redirect(['/quiz/quizmaster/view', 'id' => $model->quizId]);
         }
-
+        //$Assessments = $questionsModel->getAllAssessments();
+        $quizes = $questionsModel->getAllQuizes();
+      $model->quizId = $quzId;
+        $model->allquizes = $quizes;
         return $this->render('create', [
-            'model' => $model,
+        		'model' => $model,
         ]);
+        
     }
 
     /**
@@ -84,14 +109,43 @@ class QuestionsmasterController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->qId]);
+        $model = new QuestionMasterMain();
+        $questionsModel = new QuestionsMaster();
+        $questionsInfo = $this->findModel($id);
+        $model->qId = $questionsInfo->qId;
+        $model->selectedQuizId = $questionsInfo->quizId;
+        $model->question = $questionsInfo->question;
+      //  print_r( $model->question); exit;
+        $model->status = $questionsInfo->status;
+        $model->quizId = $questionsInfo->quizId;
+        $questionOptions = $model->searchOptions();
+        $model->options1 = $questionOptions[1];
+        $model->options2 = $questionOptions[2];
+        $model->options3 = $questionOptions[3];
+        $model->options4 = $questionOptions[4];
+       // print_r( $model->options4); exit;
+         
+        //print_r($questionOptions); exit();
+        $questionAnswers = $model->searchAnswers();
+        $model->answer =  $questionAnswers['answer'];
+       
+        $questionAnswers = $model->searchAnswers();
+        if (Yii::$app->request->isAjax ) {
+        	Yii::$app->response->format = Response::FORMAT_JSON;
+        	return ActiveForm::validate($model);
         }
-
+        if ($model->load(Yii::$app->request->post())) {
+      
+        	$questions = $model->questionUpdate();
+        	Yii::$app->getSession()->setFlash('success', 'You are successfully update Question.');
+        	return $this->redirect(['/quiz/quizmaster/view', 'id' => $model->quizId]);
+        	//return $this->redirect(['sets/view', 'id' => $model->setId]);
+        }
+         $quizes = $questionsModel->getAllQuizes();
+        $model->allquizes = $quizes;
         return $this->render('update', [
-            'model' => $model,
+        		'model' => $model,
+        		'populatedinfo' => $this->populateInfo($model->qId)
         ]);
     }
 
@@ -104,9 +158,11 @@ class QuestionsmasterController extends Controller
      */
     public function actionDelete($id)
     {
+    	$qmodel = QuestionsMaster::find()->where(['qId'=>$id])->one();
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+       // return $this->redirect(['index']);
+     	return $this->redirect(['/quiz/quizmaster/view', 'id' => $qmodel->quizId]);
     }
 
     /**
@@ -124,4 +180,27 @@ class QuestionsmasterController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    public function populateInfo($id)
+    {
+    	$answers= QuestionsAnswers::findAll(['qId'=>$id]);
+    	$data = ArrayHelper::toArray($answers, [
+    			'qaId',
+    			'answer'
+    	]);
+    	$ans_list = array();
+    	$text_ans = '';
+    	foreach ($data as $key => $val_ans)
+    	{
+    		$option = QuestionsOptions::findOne(['qId'=>$id,'optionId'=>$val_ans['answer']]);
+    		$data_opt = ArrayHelper::toArray($option, [
+    				'qopId',
+    				'options'
+    		]);
+    		$ans_list[] = $val_ans['answer'];
+    		$text_ans .= $data_opt['options'].',';
+    	}
+    	return array('ans_list'=>$ans_list,'ans_text'=>$text_ans);
+    	 
+    }
+    
 }

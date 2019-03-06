@@ -8,6 +8,7 @@ use backend\modules\workshop\models\WorkshopSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\User;
 
 /**
  * WorkshopController implements the CRUD actions for Workshop model.
@@ -65,16 +66,47 @@ class WorkshopController extends Controller
     public function actionCreate()
     {
         $model = new Workshop();
+      
+       // print_r( $umails); exit();
 
         if ($model->load(Yii::$app->request->post())) {
+        	if($model->validate())
+        	{
         	$model->from_date = date('Y-m-d', strtotime($model->from_date));
         	$model->to_date = date('Y-m-d', strtotime($model->to_date));
         	$model->createdBy = Yii::$app->user->identity->id;
         	$model->updatedBy =  Yii::$app->user->identity->id;
         	$model->createdDate = date('Y-m-d H:i;s');
         	$model->updatedDate = date('Y-m-d H:i;s');
-        	$model->save();
-            return $this->redirect(['index']);
+        	
+        	if($model->save()){
+        		
+        		$uinfomail = User::find()->select('email')->where('role=4')->all();
+        		$umails = array();
+        		foreach($uinfomail as $umail)
+        		{
+        			$umails[] = $umail['email'];
+        		}
+        		$body='Hello Fellows';
+        	//	$body.=$name;
+        		$body.='<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    					New workshop Details are added Cpl India';
+        		$body.='<br><br>Please check your account ';
+        		
+        			
+        		$body.='<br><br><br><u>Thanks&Regards,</u>';
+        		$body.='<br>&nbsp;CPLIndia Team.';
+        			
+        		\Yii::$app->mailer->compose()
+        		->setFrom('ngh@expertwebworx.in')
+        		->setTo($umails)
+        		->setSubject('Notication for New Workshop')
+        		->setHtmlBody($body)
+        		->send();
+        		Yii::$app->getSession()->setFlash('success', 'workshop details added successfully ');
+                return $this->redirect(['index']);
+        	}
+        }
         }
 
         return $this->render('create', [

@@ -68,6 +68,12 @@ class RolesController extends Controller
         $model->scenario = 'create';
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        	$role = Roles::find()->where(['role_name'=>$model->role_name])->one();
+        	if(!empty($role)){
+        		$key = 'role_name';
+        		$model->addError($key,$model->role_name. ' RoleName Already Exist ');
+        	}
+        	else{
         	$model->createdDate =  date("Y-m-d H:i:s");
         	$model->updatedDate = date('Y-m-d H:i:s');
         	$model->createdBy = Yii::$app->user->identity->id;
@@ -75,6 +81,7 @@ class RolesController extends Controller
         	$model->save();
         	Yii::$app->session->setFlash('success', "Roles Created successfully ");
         	return $this->redirect(['index']);
+        	}
            // return $this->redirect(['view', 'id' => $model->roleId]);
         }
 

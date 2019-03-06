@@ -10,6 +10,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\modules\semisters\models\Semisters;
 use yii\web\UploadedFile;
+use backend\modules\assignment\models\UserAssignments;
+use yii\data\ActiveDataProvider;
 
 /**
  * AssignmentController implements the CRUD actions for Assignment model.
@@ -67,6 +69,7 @@ class AssignmentController extends Controller
     public function actionCreate()
     {
         $model = new Assignment();
+        $model->scenario = 'create';
         $semisters = Semisters::find()->select('sem_id,name')->all();
         $semister =array();
         for($k=0;$k<count($semisters);$k++)
@@ -76,8 +79,12 @@ class AssignmentController extends Controller
         }
         $model->semname = $semister;
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) ) {
+        	
         	$model->attachmentUrl = UploadedFile::getInstance($model,'attachmentUrl');
+        	if($model->validate())
+        	{
+      
         	if(!(empty($model->attachmentUrl)))
         	{
         		$type=$model->attachmentUrl->type;
@@ -93,7 +100,10 @@ class AssignmentController extends Controller
         	$model->createdDate = date('Y-m-d H:i;s');
         	$model->updatedDate = date('Y-m-d H:i;s');
         	 $model->save();
-            return $this->redirect(['view', 'id' => $model->asId]);
+            return $this->redirect(['index']);
+        	}else{
+        	//print_r($model->errors); exit;
+        	}
         }
 
         return $this->render('create', [
@@ -120,6 +130,41 @@ class AssignmentController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionAssignupload($aid)
+    {
+    	//print_r($aid); exit();
+    	$model= new UserAssignments();
+    	$asigninfo = Assignment::find()->where(['asId'=>$aid])->one();
+    	$model->asId = $asigninfo->name;
+    	$seminfo = Semisters::find()->where(['sem_id'=>$asigninfo->sem_id])->one();
+    	$sid = $seminfo->sem_id;
+    	$model->sem_id = $seminfo->name;
+    	//print_r($seminfo->name); exit();
+    	if ($model->load(Yii::$app->request->post()))
+    	{
+    		$model->attachmentUrl = UploadedFile::getInstance($model,'attachmentUrl');
+    		if(!(empty($model->attachmentUrl)))
+    		{
+    			$type=$model->attachmentUrl->type;
+    			$docurl = time().$model->attachmentUrl->name;
+    			$model->attachmentUrl->saveAs('assigndocs/'.$docurl );
+    			$model->attachmentUrl = $docurl;
+    			$model->fileType = $type;
+    		}
+    		$model->asId = $aid;
+    		$model->sem_id = $sid;
+    		$model->userId = Yii::$app->user->identity->id;
+    		$model->uploadedDate = date('Y-m-d');
+    		$model->save();
+    		
+    		return $this->redirect(['view', 'id' => $model->asId]);
+    	}
+    	return $this->render('_assignupload', [
+    			'model' => $model,
+    	]);
+    }
+    	
+    
 
     /**
      * Deletes an existing Assignment model.
@@ -170,4 +215,27 @@ class AssignmentController extends Controller
     		Yii::app()->end();
     	}
     }
+    public function actionAssignlist()
+    {
+    	$query= UserAssignments::find();
+    	$dataProvider = new ActiveDataProvider([
+    			'query' => $query,
+    	]);
+    	//print_r($asignmodel); exit();
+    	
+    	return $this->render('assignlist', [
+    			//'model' => $model,
+    			'dataProvider' => $dataProvider,
+    	]);
+    	
+    }
+    public function actionAssignview($id)
+    {
+    	$model = UserAssignments::findOne($id);
+    	return $this->render('assignview', [
+    			'model' => $model,
+    	]);
+    	
+    }
+    
 }

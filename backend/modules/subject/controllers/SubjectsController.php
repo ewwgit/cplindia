@@ -4,12 +4,17 @@ namespace backend\modules\subject\controllers;
 
 use Yii;
 use backend\modules\subject\models\Subjects;
+use backend\modules\courses\models\Courses;
 use backend\modules\subject\models\SubjectsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\helpers\Url;
+use backend\modules\subject\models\SubjectsDocuments;
+use backend\modules\semisters\models\Semisters;
+use common\models\User;
+
 
 /**
  * SubjectsController implements the CRUD actions for Subjects model.
@@ -67,27 +72,50 @@ class SubjectsController extends Controller
     public function actionCreate($cId)
     {
         $model = new Subjects();
-        $model->scenario = 'create';
+        //$model->scenario = 'create';
+       // $model->courseId = $cId;
+        $couseinfo = Courses::find()->where(['courseId'=>$cId])->one();
+        $seminfo =Semisters::find()->where(['sem_id'=>$couseinfo->sem_id])->one();
+        $model->sem_name = $seminfo->name;
+        $model->course_name = $couseinfo->name;
 
         if ($model->load(Yii::$app->request->post()) ) {
+        	 $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
         	
-        	$model->attachmentUrl = UploadedFile::getInstance($model,'attachmentUrl');
-        	if(!(empty($model->attachmentUrl)))
-        	{
-        		$type=$model->attachmentUrl->type;
-        		$docurl = time().$model->attachmentUrl->name;
-        		$model->attachmentUrl->saveAs('coursedocs/'.$docurl );
-        		$model->attachmentUrl = $docurl;
-        		$model->fileType = $type;
-        	}
         	 $model->courseId = $cId;
         	 $model->createdBy = Yii::$app->user->identity->id;
         	 $model->updatedBy = Yii::$app->user->identity->id;
         	 $model->createdDate = date('Y-m-d H:i:s');
         	 $model->updatedDate = date('Y-m-d H:i:s');
-        	 $model->save();
+        	 if($model->save()){
+        	 	$model->upload();
+        	 	$uinfomail = User::find()->select('email')->where('role=4')->all();
+        	 	$umails = array();
+        	 	foreach($uinfomail as $umail)
+        	 	{
+        	 		$umails[] = $umail['email'];
+        	 	}
+        	 	$body='Hello Fellows';
+        	 	//	$body.=$name;
+        	 	$body.='<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    					New Subject Details are added Cpl India';
+        	 	$body.='<br><br>Please check your account ';
+        	 	 
+        	 	
+        	 	$body.='<br><br><br><u>Thanks&Regards,</u>';
+        	 	$body.='<br>&nbsp;CPLIndia Team.';
+        	 	
+        	 	\Yii::$app->mailer->compose()
+        	 	->setFrom('ngh@expertwebworx.in')
+        	 	->setTo($umails)
+        	 	->setSubject('Notication for New Subject')
+        	 	->setHtmlBody($body)
+        	 	->send();
+        	 	Yii::$app->getSession()->setFlash('success', 'Subject details added successfully ');
+        	  return $this->redirect(['/courses/courses/view', 'id' => $model->courseId]);
+        	 }
         	 
-            return $this->redirect(['view', 'id' => $model->subId]);
+           
         }
 
         return $this->render('create', [
@@ -104,26 +132,26 @@ class SubjectsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-       $updateddoc = $model->attachmentUrl;
+        $model =  Subjects::findOne($id);
+        $cid = $model->courseId;
+        
+        $couseinfo = Courses::find()->where(['courseId'=>$model->courseId])->one();
+        $seminfo =Semisters::find()->where(['sem_id'=>$couseinfo->sem_id])->one();
+        $model->sem_name = $seminfo->name;
+        $model->course_name = $couseinfo->name;
+        //$model->courseId = $model->courseId;
+       //$updateddoc = $model->attachmentUrl;
 
         if ($model->load(Yii::$app->request->post()) ) {
-        	$model->attachmentUrl = UploadedFile::getInstance($model,'attachmentUrl');
-        	if(!(empty($model->attachmentUrl)))
-        	{
-        		$type=$model->attachmentUrl->type;
-        		$docurl = time().$model->attachmentUrl->name;
-        		$model->attachmentUrl->saveAs('coursedocs/'.$docurl );
-        		$model->attachmentUrl = $docurl;
-        		$model->fileType = $type;
-        	}
-        	else{
-        		$model->attachmentUrl = $updateddoc;
-        	}
+        	$model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+        	$model->courseId =  $cid;
         	$model->updatedBy = Yii::$app->user->identity->id;
         	$model->updatedDate = date('Y-m-d H:i:s');
-        	$model->save();
-            return $this->redirect(['view', 'id' => $model->subId]);
+        	if($model->save())
+        	{
+        		$model->upload();
+        	}
+            return $this->redirect(['/courses/courses/view', 'id' => $model->courseId]);
         }
 
         return $this->render('update', [
@@ -140,9 +168,12 @@ class SubjectsController extends Controller
      */
     public function actionDelete($id)
     {
+    	$model =  Subjects::findOne($id);
+    	$cid = $model->courseId;
         $this->findModel($id)->delete();
+        return $this->redirect(['/courses/courses/view', 'id' => $model->courseId]);
 
-        return $this->redirect(['index']);
+       // return $this->redirect(['index']);
     }
 
     public function actionDownload($file) {
@@ -175,6 +206,8 @@ class SubjectsController extends Controller
     protected function findModel($id)
     {
         if (($model = Subjects::findOne($id)) !== null) {
+        	$documenturl = SubjectsDocuments::find()->where(['subId'=>$model->subId])->all();
+        	$model->subdocurl = $documenturl;
             return $model;
         }
 

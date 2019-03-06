@@ -34,11 +34,12 @@ class Project extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'description', 'from_date', 'to_date', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate', 'status'], 'required'],
+            [['name', 'description', 'from_date', 'to_date',   'status'], 'required'],
             [['description', 'status'], 'string'],
             [['from_date', 'to_date', 'createdDate', 'updatedDate'], 'safe'],
             [['createdBy', 'updatedBy'], 'integer'],
             [['name'], 'string', 'max' => 250],
+        		[['from_date', 'to_date'],'validateDate'],
         ];
     }
 
@@ -59,5 +60,14 @@ class Project extends \yii\db\ActiveRecord
             'updatedDate' => 'Updated Date',
             'status' => 'Status',
         ];
+    }
+    public function validateDate()
+    {
+    	$fdate = date('Y-m-d', strtotime($this->from_date));
+    	$tdate = date('Y-m-d', strtotime($this->to_date));
+    	if($tdate < $fdate)
+    	{
+    		$this->addError('to_date', 'To date is always greater than from date');
+    	}
     }
 }

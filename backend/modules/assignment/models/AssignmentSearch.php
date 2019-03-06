@@ -5,6 +5,7 @@ namespace backend\modules\assignment\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\assignment\models\Assignment;
+use Yii;
 
 /**
  * AssignmentSearch represents the model behind the search form of `backend\modules\assignment\models\Assignment`.
@@ -40,7 +41,11 @@ class AssignmentSearch extends Assignment
      */
     public function search($params)
     {
-        $query = Assignment::find();
+    	if(Yii::$app->user->identity->role == 4){
+        $query = Assignment::find()->where(['status'=>'Active']);
+    	}else{
+    		$query = Assignment::find();
+    	}
 
         // add conditions that should always apply here
 

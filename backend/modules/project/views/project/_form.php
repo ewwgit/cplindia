@@ -47,3 +47,8 @@ use kartik\date\DatePicker;
 </div>
 </div>
 </div>
+<style>
+.help-block {
+    height: 5px;
+}
+</style>

@@ -3,6 +3,7 @@
 namespace backend\modules\subject\models;
 
 use Yii;
+use backend\modules\subject\models\SubjectsDocuments;
 
 /**
  * This is the model class for table "subjects".
@@ -21,6 +22,10 @@ class Subjects extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+	public $imageFiles;
+	public $subdocurl;
+	public $sem_name;
+	public $course_name;
     public static function tableName()
     {
         return 'subjects';
@@ -32,12 +37,13 @@ class Subjects extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['courseId','name', 'description','createdBy', 'updatedBy', 'createdDate', 'updatedDate','fileType'], 'required'],
-          [['attachmentUrl'], 'required','on'=>'create'],
+            [['name', 'description','createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
+       //   [['attachmentUrl'], 'required','on'=>'create'],
             [['createdBy', 'updatedBy'], 'integer'],
             [['createdDate', 'updatedDate'], 'safe'],
             [['name', 'description'], 'string', 'max' => 250],
-        	['attachmentUrl', 'file', 'skipOnEmpty' => true, 'extensions' => 'pdf,docx,doc','maxSize' => 1024 * 1024 * 1],
+        	[['imageFiles'], 'file', 'skipOnEmpty' => true, 'extensions' => 'pdf,mp4', 'maxFiles' => 4,'maxSize' => 1024 * 1024 * 2],
+        	//['attachmentUrl', 'file', 'skipOnEmpty' => true, 'extensions' => 'pdf,docx,doc','maxSize' => 1024 * 1024 * 1],
         ];
     }
 
@@ -48,13 +54,38 @@ class Subjects extends \yii\db\ActiveRecord
     {
         return [
             'subId' => 'Sub ID',
-            'name' => 'Name',
-            'description' => 'Description',
-            'attachmentUrl' => 'Attachment Url',
+            'name' => 'Subject Name',
+            'description' => 'Subject Description',
             'createdBy' => 'Created By',
             'updatedBy' => 'Updated By',
             'createdDate' => 'Created Date',
             'updatedDate' => 'Updated Date',
+        		'imageFiles'=>'Subject Documents',
         ];
+        
+    }
+    public function upload()
+    {
+    	if ($this->validate()) {
+    	
+    		foreach ($this->imageFiles as $file) {
+    			 
+    			$subdocfiles = new SubjectsDocuments();
+    			$subdocfiles->subId = $this->subId;
+    			$type=$file->type;
+    			$docurl = time().$file->name;
+    			$file->saveAs('coursedocs/'.$docurl );
+    			$subdocfiles->attachmentUrl = $docurl;
+    			$subdocfiles->fileType = $type;
+    			$subdocfiles->fileType =  $file->type;
+    			$subdocfiles->save();
+    			
+    		}
+    		return true;
+    	} else {
+    		/* $errors = $this->errors;
+    		 print_r($errors);exit(); */
+    		return false;
+    	}
     }
 }

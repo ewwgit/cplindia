@@ -5,6 +5,7 @@ namespace backend\modules\courses\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\courses\models\Courses;
+use Yii;
 
 /**
  * CoursesSearch represents the model behind the search form of `backend\modules\courses\models\Courses`.
@@ -40,7 +41,13 @@ class CoursesSearch extends Courses
      */
     public function search($params)
     {
+    	if(Yii::$app->user->identity->role == 4)
+    	{
+    		$query = Courses::find()->where(['status'=>'Active']);
+    	}
+    	else{
         $query = Courses::find();
+    	}
 
         // add conditions that should always apply here
 

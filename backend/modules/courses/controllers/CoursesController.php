@@ -9,7 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\modules\subject\models\SubjectsSearch;
-
+use backend\modules\semisters\models\Semisters;
+use common\models\User;
 /**
  * CoursesController implements the CRUD actions for Courses model.
  */
@@ -54,12 +55,15 @@ class CoursesController extends Controller
     public function actionView($id)
     {
     	$searchModel = new SubjectsSearch();
+    	$cinfo = Courses::find()->where(['courseId'=>$id])->one();
+    $sid = $cinfo->sem_id;
     	$dataProvider = $searchModel->searchAdmin(Yii::$app->request->queryParams);
     	 
     	return $this->render('sublist', [
     			'searchModel' => $searchModel,
     			'dataProvider' => $dataProvider,
-    			'courseId'=>$id
+    			'courseId'=>$id,
+    			'sid'=> $sid
     	]);
       
     }
@@ -72,7 +76,8 @@ class CoursesController extends Controller
     public function actionCreate($sId)
     {
         $model = new Courses();
-
+        $seminfo = Semisters::find()->where(['sem_id'=>$sId])->one();
+        $model->sem_name = $seminfo->name;
         if ($model->load(Yii::$app->request->post())) {
         	$model->sem_id = $sId;
         	$model->createdBy = Yii::$app->user->identity->id;
@@ -98,13 +103,43 @@ class CoursesController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
+       $model = Courses::findOne($id);
+       $sid =  $model->sem_id ;
+        $seminfo = Semisters::find()->where(['sem_id'=>$model->sem_id])->one();
+        $model->sem_name = $seminfo->name;
         if ($model->load(Yii::$app->request->post())) {
+        	$model->sem_id =   $sid;
         	$model->updatedBy = Yii::$app->user->identity->id;
         	$model->updatedDate = date('Y-m-d H:i:s');
-        	$model->save();
-            return $this->redirect(['view', 'id' => $model->courseId]);
+        	if($model->save())
+        	{
+        		$uinfomail = User::find()->select('email')->where('role=4')->all();
+        		$umails = array();
+        		foreach($uinfomail as $umail)
+        		{
+        			$umails[] = $umail['email'];
+        		}
+        		$body='Hello Fellows';
+        		//	$body.=$name;
+        		$body.='<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    					New Course Details are added Cpl India';
+        		$body.='<br><br>Please check your account ';
+        		 
+        		
+        		$body.='<br><br><br><u>Thanks&Regards,</u>';
+        		$body.='<br>&nbsp;CPLIndia Team.';
+        		
+        		\Yii::$app->mailer->compose()
+        		->setFrom('ngh@expertwebworx.in')
+        		->setTo($umails)
+        		->setSubject('Notication for New Course')
+        		->setHtmlBody($body)
+        		->send();
+        		Yii::$app->getSession()->setFlash('success', 'Course details added successfully ');
+        		return $this->redirect(['/semisters/semisters/view', 'id' =>$model->sem_id]);
+        	}
+        
+           // return $this->redirect(['view', 'id' => $model->courseId]);
         }
 
         return $this->render('update', [
@@ -121,9 +156,13 @@ class CoursesController extends Controller
      */
     public function actionDelete($id)
     {
+    	//echo 'hello'; exit;
+    	$model = Courses::findOne($id);
+    	$sid =  $model->sem_id ;
         $this->findModel($id)->delete();
+        return $this->redirect(['/semisters/semisters/view', 'id' =>$model->sem_id]);
 
-        return $this->redirect(['index']);
+        //return $this->redirect(['index']);
     }
 
     /**

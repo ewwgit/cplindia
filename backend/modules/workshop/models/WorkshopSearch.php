@@ -5,6 +5,7 @@ namespace backend\modules\workshop\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\workshop\models\Workshop;
+use Yii;
 
 /**
  * WorkshopSearch represents the model behind the search form of `backend\modules\workshop\models\Workshop`.
@@ -40,7 +41,11 @@ class WorkshopSearch extends Workshop
      */
     public function search($params)
     {
-        $query = Workshop::find();
+    	if(Yii::$app->user->identity->role == 4){
+        $query = Workshop::find()->where(['status'=>'Active']);
+    	}else{
+    		$query = Workshop::find();
+    	}
 
         // add conditions that should always apply here
 

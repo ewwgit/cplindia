@@ -30,6 +30,7 @@ class QuizMaster extends \yii\db\ActiveRecord
      * {@inheritdoc}
      */
 	public $semname;
+	//public $qId;
     public static function tableName()
     {
         return 'quiz_master';
@@ -41,12 +42,13 @@ class QuizMaster extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sem_id', 'courseId', 'name', 'description', 'validFrom', 'validTo', 'quizTime', 'totalMarks', 'passMarks', 'eachquestioncarries', 'status', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate'], 'required'],
+            [['sem_id', 'courseId', 'name', 'description', 'validFrom', 'validTo', 'quizTime', 'totalMarks', 'passMarks', 'eachquestioncarries', 'status'], 'required'],
             //[['sem_id', 'courseId', 'totalMarks', 'passMarks', 'eachquestioncarries', 'createdBy', 'updatedBy'], 'integer'],
             [['description', 'status'], 'string'],
             [['validFrom', 'validTo', 'createdDate', 'updatedDate'], 'safe'],
             [['name'], 'string', 'max' => 250],
            // [['quizTime'], 'string', 'max' => 5],
+        		//[['validFrom', 'validTo',],'validateDate']
         ];
     }
 
@@ -59,7 +61,7 @@ class QuizMaster extends \yii\db\ActiveRecord
             'quizId' => 'Quiz ID',
             'sem_id' => 'Semister',
             'courseId' => 'Course',
-            'name' => 'Name',
+            'name' => 'Quiz Name',
             'description' => 'Description',
             'validFrom' => 'Valid From',
             'validTime' => 'Valid To',
@@ -74,4 +76,13 @@ class QuizMaster extends \yii\db\ActiveRecord
             'updatedDate' => 'Updated Date',
         ];
     }
+   /*  public function validateDate()
+    {
+    	$fdate = date('Y-m-d', strtotime($this->validFrom));
+    	$tdate = date('Y-m-d', strtotime($this->validTo));
+    	if($tdate < $fdate)
+    	{
+    		$this->addError('validTo', 'Valid to is always greater than valid from');
+    	}
+    } */
 }

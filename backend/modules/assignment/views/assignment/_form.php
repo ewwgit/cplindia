@@ -13,7 +13,7 @@ use kartik\date\DatePicker;
 <div class="box box-primary">
 <div class="box-body">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
         <div class="form-group col-lg-6 col-sm-12">
 
     <?= $form->field($model, 'sem_id')->dropdownList($model->semname,['prompt' =>'Select Semister']); ?>
@@ -57,3 +57,8 @@ use kartik\date\DatePicker;
 </div>
 </div>
 </div>
+<style>
+.help-block {
+    height: 5px;
+}
+</style>

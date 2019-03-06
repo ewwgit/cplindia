@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+        		'name',
             //'quizId',
                     [
             	'attribute'=>'sem_id',
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             	return $cdata->name;
             }
             ],
-            'name',
+           
             'description:ntext',
             'validFrom',
             //'validTime',

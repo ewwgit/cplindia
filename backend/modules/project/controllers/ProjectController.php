@@ -8,6 +8,7 @@ use backend\modules\project\models\ProjectSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\User;
 
 /**
  * ProjectController implements the CRUD actions for Project model.
@@ -67,14 +68,43 @@ class ProjectController extends Controller
         $model = new Project();
 
         if ($model->load(Yii::$app->request->post())) {
+        	
+        	if($model->validate())
+        	{
         	$model->from_date = date('Y-m-d', strtotime($model->from_date));
         	$model->to_date = date('Y-m-d', strtotime($model->to_date));
         	$model->createdBy = Yii::$app->user->identity->id;
         	$model->updatedBy =  Yii::$app->user->identity->id;
         	$model->createdDate = date('Y-m-d H:i;s');
         	$model->updatedDate = date('Y-m-d H:i;s');
-        	$model->save();
-            return $this->redirect(['index']);
+        if($model->save()){
+        		
+        		$uinfomail = User::find()->select('email')->where('role=4')->all();
+        		$umails = array();
+        		foreach($uinfomail as $umail)
+        		{
+        			$umails[] = $umail['email'];
+        		}
+        		$body='Hello Fellows';
+        	//	$body.=$name;
+        		$body.='<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    					Project Details are added in Cpl India';
+        		$body.='<br><br>Please check your account ';
+        		
+        			
+        		$body.='<br><br><br><u>Thanks&Regards,</u>';
+        		$body.='<br>&nbsp;CPLIndia Team.';
+        			
+        		\Yii::$app->mailer->compose()
+        		->setFrom('ngh@expertwebworx.in')
+        		->setTo($umails)
+        		->setSubject('Notication for New project')
+        		->setHtmlBody($body)
+        		->send();
+        		Yii::$app->getSession()->setFlash('success', 'Project details added successfully ');
+                return $this->redirect(['index']);
+        	}
+        }
         }
 
         return $this->render('create', [
@@ -95,7 +125,7 @@ class ProjectController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
         	      	$model->updatedBy =  Yii::$app->user->identity->id;
-        	      	$model->updatedDate = date('Y-m-d H:i;s');
+        	      	$model->updatedDate = date('Y-m-d H:i:s');
         	      	$model->save();
         	      	return $this->redirect(['index']);
         	      	

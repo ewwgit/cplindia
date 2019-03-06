@@ -39,14 +39,18 @@ use backend\modules\user\models\AdminUsers;
                         <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
                         <span class="hidden-xs"><?php echo Yii::$app->user->identity->username ?></span>
                            <?php }else{
-            	if($roleiddata['role'] == 2)
-            	{
             		
             		$userimage = AdminUsers::find()->select(['profileImage'])->where(['userId' =>Yii::$app->user->identity->id])->one();
+            		if($userimage['profileImage'] != '')
+            		{
             ?>
-            <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
+            <img src="<?= $userimage['profileImage'] ?>" class="user-image" alt="User Image"/>
                         <span class="hidden-xs"> <?php echo Yii::$app->user->identity->username ?></span>
-                        <?php } }?>
+                        <?php }else{?>
+                        <img src="<?php echo Url::base()."/profileImage/user-iconnew.png" ;?>" class="user-image" alt="Image">
+                        <span class="hidden-xs"> <?php echo Yii::$app->user->identity->username ?></span>
+                        
+                        <?php }  }?>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
@@ -54,6 +58,7 @@ use backend\modules\user\models\AdminUsers;
                         <?php 
                           if($roleiddata['role'] ==1)
               {
+              
               ?>
                             <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle"
                                  alt="User Image"/>
@@ -62,15 +67,23 @@ use backend\modules\user\models\AdminUsers;
                            <?php echo Yii::$app->user->identity->username ?>
                             </p>
                                  <?php }else{
-            	if($roleiddata['role'] == 2)
-            	{
-            	?>  <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle"
+            	
+            		$userimage = AdminUsers::find()->select(['profileImage'])->where(['userId' =>Yii::$app->user->identity->id])->one();
+            		if($userimage['profileImage'] != '')
+            		{
+            	?>  <img src="<?= $userimage['profileImage'] ?>" class="img-circle"
                                  alt="User Image"/>
 
                             <p>
                            <?php echo Yii::$app->user->identity->username ?>
                             </p>
-                            <?php }}?>
+                            <?php }else{?>
+                       <img src="<?php echo Url::base()."/profileImage/user-iconnew.png" ;?>" class="user-image" alt="Image">
+
+                            <p>
+                           <?php echo Yii::$app->user->identity->username ?>
+                            </p>
+                            <?php  }}?>
             	
                         </li>
                         <!-- Menu Body -->

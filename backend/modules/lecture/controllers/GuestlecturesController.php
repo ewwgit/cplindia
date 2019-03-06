@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use backend\modules\semisters\models\Semisters;
 use backend\modules\courses\models\Courses;
 use common\models\User;
+use backend\modules\user\models\AdminUsers;
 
 /**
  * GuestlecturesController implements the CRUD actions for GuestLectures model.
@@ -76,12 +77,17 @@ class GuestlecturesController extends Controller
         	$semister[$semisters[$k]['sem_id']] = $semisters[$k]['name'];
         }
         $model->semname = $semister;
-        $spdata = User::find()->where('role=3')->all();
-        $speaker = array();
-        for($j=0;$j<count($spdata);$j++)
+        $spdata = User::find()->select('id')->where('role=3')->all();
+        $spinfo = array();
+        foreach($spdata as $sp)
         {
-        	//$hospital['Prompt'] = 'Select Hospital Name';
-        	$speaker[$spdata[$j]['id']] = $spdata[$j]['username'];
+         $spinfo[] = $sp->id;
+        }
+        $speaker = array();
+        for($j=0;$j<count($spinfo);$j++)
+        {
+        	$spdatau = AdminUsers::find()->where(['userId'=>$spinfo[$j]])->one();
+        	$speaker[$spdatau['userId']] = $spdatau['first_name'];
         }
         $model->spname = $speaker;   
         if ($model->load(Yii::$app->request->post()) ) {
@@ -89,8 +95,33 @@ class GuestlecturesController extends Controller
         	$model->updatedBy =  Yii::$app->user->identity->id;
         	$model->createdDate = date('Y-m-d H:i;s');
         	$model->updatedDate = date('Y-m-d H:i;s');
-        	 $model->save();
-            return $this->redirect(['view', 'id' => $model->letureId]);
+        	 if($model->save()){
+        	 	$uinfomail = User::find()->select('email')->where('role=4')->all();
+        	 	$umails = array();
+        	 	foreach($uinfomail as $umail)
+        	 	{
+        	 		$umails[] = $umail['email'];
+        	 	}
+        	 	$body='Hello Fellows';
+        	 	//	$body.=$name;
+        	 	$body.='<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    					New Guest Lecture Details are added Cpl India';
+        	 	$body.='<br><br>Please check your account ';
+        	 	
+        	 	 
+        	 	$body.='<br><br><br><u>Thanks&Regards,</u>';
+        	 	$body.='<br>&nbsp;CPLIndia Team.';
+        	 	 
+        	 	\Yii::$app->mailer->compose()
+        	 	->setFrom('ngh@expertwebworx.in')
+        	 	->setTo($umails)
+        	 	->setSubject('Notication for New Guest Lecture')
+        	 	->setHtmlBody($body)
+        	 	->send();
+        	 	Yii::$app->getSession()->setFlash('success', 'Guest Lecture details added successfully ');
+        	 	return $this->redirect(['index']);
+        	 }
+           // return $this->redirect(['view', 'id' => $model->letureId]);
         }
 
         return $this->render('create', [

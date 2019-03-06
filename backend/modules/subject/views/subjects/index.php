@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'subId',
             'name',
             'description',
-            'attachmentUrl:ntext',
+           // 'attachmentUrl:ntext',
             'createdBy',
             //'updatedBy',
             //'createdDate',

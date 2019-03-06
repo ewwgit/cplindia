@@ -11,7 +11,8 @@ use backend\modules\user\models\AdminUsers;
         <!-- Sidebar user panel -->
         <div class="user-panel">
         <?php 
-              $roleiddata = User::find()->select(['role'])->where(['role'=> Yii::$app->user->identity->role])->one();
+              $roleiddata = User::find()->select(['role','id'])->where(['role'=> Yii::$app->user->identity->role])->one();
+             
               
               ?>
               <?php if($roleiddata['role'] == 1){?>
@@ -25,22 +26,30 @@ use backend\modules\user\models\AdminUsers;
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
             <?php }else{
-            	if($roleiddata['role'] == 2)
-            	{
+            	
             		
             		$userimage = AdminUsers::find()->select(['profileImage'])->where(['userId' =>Yii::$app->user->identity->id])->one();
+            		if($userimage['profileImage'] != '')
+            		{
             ?>
                         <div class="pull-left image">
-                   <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
+                   <img src="<?= $userimage['profileImage'] ?>" class="img-circle" alt="User Image"/>
                
               
             </div>
+            <?php }else{?>
+              <div class="pull-left image">
+                 <img src="<?php echo Url::base()."/profileImage/user-iconnew.png" ;?>" class="user-image" alt="Image">
+               
+              
+            </div>
+            <?php }?>
             <div class="pull-left info">
                 <p><?php echo Yii::$app->user->identity->username ?></p>
 
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
-            <?php } }?>
+            <?php  }?>
             
         </div>
 
@@ -104,6 +113,7 @@ use backend\modules\user\models\AdminUsers;
                 		'items' => [
                 				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/assignment/assignment/create'],],
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/assignment/assignment'],],
+                				//['label' => 'User Assignments', 'icon' => 'eye', 'url' => ['/assignment/assignment/assignlist'],],
                 		],
                 		],
                 		[
@@ -133,6 +143,18 @@ use backend\modules\user\models\AdminUsers;
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/quiz/quizmaster'],],
                 		],
                 		],
+                		['label' => 'Fellow Assignments', 'icon' => 'book', 'url' => ['/assignment/assignment/assignlist']],
+               
+                		['label' => 'Fellow Marks', 'icon' => 'book', 'url' => ['/quiz/quizmaster/fellowmarks']],
+                		[
+                		'label' => 'Events',
+                		'icon' => 'book',
+                		'url' => ['/events/events'],
+                		'items' => [
+                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/events/events/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/events/events'],],
+                		],
+                		],
                 	/* 	[
                 		'label' => 'Courses',
                 		'icon' => 'users',
@@ -145,8 +167,8 @@ use backend\modules\user\models\AdminUsers;
                 ],
             ]
         ) ?>
-        <?php } else{
-        if($roleiddata['role'] == 2){?>
+        <?php }
+        if($roleiddata['role'] == 4){?>
 
         <?= dmstr\widgets\Menu::widget(
             [
@@ -158,7 +180,6 @@ use backend\modules\user\models\AdminUsers;
                 		'icon' => 'book',
                 		'url' => ['/semisters/semisters'],
                 		'items' => [
-                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/semisters/semisters/create'],],
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/semisters/semisters'],],
                 		],
                 		],
@@ -167,7 +188,6 @@ use backend\modules\user\models\AdminUsers;
                 		'icon' => 'book',
                 		'url' => ['/lecture/guestlectures'],
                 		'items' => [
-                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/lecture/guestlectures/create'],],
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/lecture/guestlectures'],],
                 		],
                 		],
@@ -176,24 +196,147 @@ use backend\modules\user\models\AdminUsers;
                 		'icon' => 'book',
                 		'url' => ['/assignment/assignment'],
                 		'items' => [
-                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/assignment/assignment/create'],],
                 				['label' => 'View all', 'icon' => 'eye', 'url' => ['/assignment/assignment'],],
                 		],
                 		],
-                		
-                	/* 	[
-                		'label' => 'Courses',
-                		'icon' => 'users',
-                		'url' => ['/courses/courses'],
+                		[
+                		'label' => 'Workshop',
+                		'icon' => 'book',
+                		'url' => ['/workshop/workshop'],
                 		'items' => [
-                				['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/courses/coursesmaster/create'],],
-                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/courses/coursesmaster'],],
+                				//['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/workshop/workshop/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/workshop/workshop'],],
                 		],
-                		], */
+                		],
+                		[
+                		'label' => 'Final Project',
+                		'icon' => 'book',
+                		'url' => ['/project/project'],
+                		'items' => [
+                				//['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/project/project/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/project/project'],],
+                		],
+                		],
+                		[
+                		'label' => 'Quiz',
+                		'icon' => 'book',
+                		'url' => ['/quiz/quizmaster'],
+                		'items' => [
+                				//['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/quiz/quizmaster/create'],],
+                				['label' => 'View all', 'icon' => 'eye', 'url' => ['/quiz/quizmaster/quizindex'],],
+                		],
+                		],
+                		['label' => 'Quiz Marks', 'icon' => 'book', 'url' => ['/quiz/quizmaster/marks']],
+                		
+                		['label' => 'Event Calender', 'icon' => 'book', 'url' => ['/events/events']],
                 ],
             ]
         ) ?>
-        <?php } }?>
+        <?php }
+        if($roleiddata['role'] == 2){ ?>
+        	<?= dmstr\widgets\Menu::widget(
+        			[
+        					'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
+        					'items' => [
+        							/* [
+        									'label' => 'Roles',
+        									'icon' => 'users',
+        									'url' => ['/roles/roles'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/roles/roles/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/roles/roles'],],
+        									],
+        							], */
+        							[
+        									'label' => 'Admin Users',
+        									'icon' => 'users',
+        									'url' => ['/user/adminusers'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/user/adminusers/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/user/adminusers'],],
+        									],
+        							],
+        							[
+        									'label' => 'Courses',
+        									'icon' => 'book',
+        									'url' => ['/semisters/semisters'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/semisters/semisters/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/semisters/semisters'],],
+        									],
+        							],
+        							[
+        									'label' => 'Guest Lectures',
+        									'icon' => 'book',
+        									'url' => ['/lecture/guestlectures'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/lecture/guestlectures/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/lecture/guestlectures'],],
+        									],
+        							],
+        							[
+        									'label' => 'Assignments',
+        									'icon' => 'book',
+        									'url' => ['/assignment/assignment'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/assignment/assignment/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/assignment/assignment'],],
+        											//['label' => 'User Assignments', 'icon' => 'eye', 'url' => ['/assignment/assignment/assignlist'],],
+        									],
+        							],
+        							[
+        									'label' => 'Workshop',
+        									'icon' => 'book',
+        									'url' => ['/workshop/workshop'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/workshop/workshop/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/workshop/workshop'],],
+        									],
+        							],
+        							[
+        									'label' => 'Final Project',
+        									'icon' => 'book',
+        									'url' => ['/project/project'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/project/project/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/project/project'],],
+        									],
+        							],
+        							[
+        									'label' => 'Quiz',
+        									'icon' => 'book',
+        									'url' => ['/quiz/quizmaster'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/quiz/quizmaster/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/quiz/quizmaster'],],
+        									],
+        							],
+        							['label' => 'Fellow Assignments', 'icon' => 'book', 'url' => ['/assignment/assignment/assignlist']],
+        							 
+        							['label' => 'Fellow Marks', 'icon' => 'book', 'url' => ['/quiz/quizmaster/fellowmarks']],
+        							[
+        									'label' => 'Events',
+        									'icon' => 'book',
+        									'url' => ['/events/events'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/events/events/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/events/events'],],
+        									],
+        							],
+        							/* 	[
+        							 'label' => 'Courses',
+        									'icon' => 'users',
+        									'url' => ['/courses/courses'],
+        									'items' => [
+        											['label' => 'Create', 'icon' => 'plus-circle', 'url' => ['/courses/coursesmaster/create'],],
+        											['label' => 'View all', 'icon' => 'eye', 'url' => ['/courses/coursesmaster'],],
+        									],
+        							], */
+        					],
+        					]
+     )?>
+     <?php }?>
+        
 
     </section>
 

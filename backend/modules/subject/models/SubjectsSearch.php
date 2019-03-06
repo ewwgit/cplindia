@@ -5,6 +5,7 @@ namespace backend\modules\subject\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\subject\models\Subjects;
+use Yii;
 
 /**
  * SubjectsSearch represents the model behind the search form of `backend\modules\subject\models\Subjects`.
@@ -18,7 +19,7 @@ class SubjectsSearch extends Subjects
     {
         return [
             [['subId','courseId','createdBy', 'updatedBy'], 'integer'],
-            [['name','courseId','description', 'attachmentUrl', 'createdDate', 'updatedDate'], 'safe'],
+            [['name','courseId','description','createdDate', 'updatedDate'], 'safe'],
         ];
     }
 
@@ -40,7 +41,11 @@ class SubjectsSearch extends Subjects
      */
     public function search($params)
     {
-        $query = Subjects::find();
+    	if(Yii::$app->user->identity->role == 4){
+        $query = Subjects::find()->where(['status'=>'Active']);
+    	}else{
+    		$query = Subjects::find();
+    	}
 
         // add conditions that should always apply here
 
@@ -66,8 +71,8 @@ class SubjectsSearch extends Subjects
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'attachmentUrl', $this->attachmentUrl]);
+            ->andFilterWhere(['like', 'description', $this->description]);
+           ;
 
         return $dataProvider;
     }

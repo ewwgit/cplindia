@@ -36,7 +36,7 @@ class Roles extends \yii\db\ActiveRecord
         return [
            // [['roleId'], 'required'],
             [['roleId', 'createdBy', 'updatedBy'], 'integer'],
-        	[['role_name','description','status'],'required'],
+        	[['role_name','status'],'required'],
         	[['role_name'],'validateName','on'=>'create'],
             [['status'], 'string'],
         	[['status'], 'required'],

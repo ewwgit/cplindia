@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\roles\models\RolesSearch */
@@ -23,16 +24,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'roleId',
+           // 'roleId',
             'role_name',
+        		'description',
             'status',
             //'createdBy',
             //'udpatedBy',
-            'createdDate',
+            //'createdDate',
             //'updatedDate',
 
-            ['class' => 'yii\grid\ActionColumn'],
+
+        		['class' => 'yii\grid\ActionColumn',
+        		'header'=>'Actions',
+        		'headerOptions'=>['style'=>'color:#3c8dbc'],
+        		'template' => '{view} {update}',
+        		'buttons' => [
+        			
+        		],
+        		
+        		],
         ],
     ]); ?>
     </div>

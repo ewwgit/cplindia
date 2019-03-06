@@ -34,11 +34,12 @@ class Workshop extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'description', 'from_date', 'to_date', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate', 'status','city'], 'required'],
+            [['name', 'description', 'from_date', 'to_date', 'status','city'], 'required'],
             [['description', 'status'], 'string'],
             [['from_date', 'to_date', 'createdDate', 'updatedDate','city'], 'safe'],
             [['createdBy', 'updatedBy'], 'integer'],
             [['name'], 'string', 'max' => 250],
+        		[['from_date', 'to_date'],'validateDate']
         ];
     }
 
@@ -60,5 +61,14 @@ class Workshop extends \yii\db\ActiveRecord
             'status' => 'Status',
         		'city' =>'City'
         ];
+    }
+    public function validateDate()
+    {
+    	$fdate = date('Y-m-d', strtotime($this->from_date));
+    	$tdate = date('Y-m-d', strtotime($this->to_date));
+    	if($tdate < $fdate)
+    	{
+    		$this->addError('to_date', 'To date is always greater than from date');
+    	}
     }
 }

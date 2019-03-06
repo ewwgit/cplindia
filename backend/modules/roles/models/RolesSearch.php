@@ -19,7 +19,7 @@ class RolesSearch extends Roles
     {
         return [
             [['roleId', 'createdBy', 'updatedBy'], 'integer'],
-            [['role_name', 'status', 'createdDate', 'updatedDate'], 'safe'],
+            [['role_name', 'status','description','createdDate', 'updatedDate'], 'safe'],
         ];
     }
 

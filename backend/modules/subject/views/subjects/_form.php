@@ -12,7 +12,15 @@ use yii\widgets\ActiveForm;
 <div class="box box-primary">
 <div class="box-body">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options'=>['enctype' =>'multipart/form-data']]); ?>
+                 <div class="form-group col-lg-7 col-sm-12">
+
+    <?= $form->field($model, 'sem_name')->textInput(['maxlength' => true,'readonly'=>true]) ?>
+    </div>
+                 <div class="form-group col-lg-7 col-sm-12">
+
+    <?= $form->field($model, 'course_name')->textInput(['maxlength' => true,'readonly'=>true]) ?>
+    </div>
 <div class="form-group col-lg-7 col-sm-12">
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     </div>
@@ -22,7 +30,7 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="form-group col-lg-7 col-sm-12">
 
-    <?= $form->field($model, 'attachmentUrl')->fileInput(); ?>
+   <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, ]) ?>
     </div>
 
    <div class="form-group col-lg-7 col-sm-12">

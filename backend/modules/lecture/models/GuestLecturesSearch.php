@@ -3,6 +3,7 @@
 namespace backend\modules\lecture\models;
 
 use yii\base\Model;
+use Yii;
 use yii\data\ActiveDataProvider;
 use backend\modules\lecture\models\GuestLectures;
 
@@ -40,7 +41,11 @@ class GuestLecturesSearch extends GuestLectures
      */
     public function search($params)
     {
+    	if(Yii::$app->user->identity->role == 4){
         $query = GuestLectures::find();
+    	}else {
+    		$query = GuestLectures::find();
+    	}
 
         // add conditions that should always apply here
 

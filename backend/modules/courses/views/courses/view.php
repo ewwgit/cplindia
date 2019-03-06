@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="courses-view">
 
+
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->courseId], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->courseId], [
@@ -23,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+
 
     <?= DetailView::widget([
         'model' => $model,
@@ -38,5 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'status',
         ],
     ]) ?>
+    
 
 </div>

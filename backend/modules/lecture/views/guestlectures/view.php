@@ -7,7 +7,7 @@ use common\models\User;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\lecture\models\GuestLectures */
 
-$this->title = $model->letureId;
+$this->title = $model->topicname;
 $this->params['breadcrumbs'][] = ['label' => 'Guest Lectures', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -18,23 +18,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->letureId], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->letureId], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'letureId',
+           // 'letureId',
             'topicname',
             'apiUrl:ntext',
+        		[
+        		'format' => 'raw',
+        		'attribute'=>'apiUrl',
+        		'label'=>'API Video',
+        		'value' => !empty($model->apiUrl) ? '<iframe class="embed-responsive-item" src="'.$model->apiUrl.'" frameborder="0" allowfullscreen></iframe>' : null,
+        		],
             //'speaker_id',
         		[
         		'attribute'=>'speaker_id',

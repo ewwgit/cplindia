@@ -13,7 +13,11 @@ use yii\widgets\ActiveForm;
 <div class="box-body">
     <?php $form = ActiveForm::begin(); ?>
 
- 
+             <div class="form-group col-lg-7 col-sm-12">
+
+    <?= $form->field($model, 'sem_name')->textInput(['maxlength' => true,'readonly'=>true]) ?>
+    </div>
+    
 <div class="form-group col-lg-7 col-sm-12">
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     </div>

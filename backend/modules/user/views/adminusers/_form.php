@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use SebastianBergmann\CodeCoverage\Report\PHP;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\user\models\AdminUsers */
@@ -21,42 +22,54 @@ use SebastianBergmann\CodeCoverage\Report\PHP;
     <?= $form->field($model, 'last_name')->textInput(['maxlength' => true]) ?>
     </div>
 
-    
-    <?php if($model->isNewRecord){?>
+ 
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
     </div>
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
     </div>
+    <?php if(yii::$app->controller->action->id == 'create'){?>
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'password')->passwordInput()?>
     </div>
     <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'confirmpassword')->passwordInput()?>
     </div>
-<?php } ?>
+    <?php }?>
+
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
     </div>
-<div class="form-group col-lg-6 col-sm-12">
-  <?php if($model->isNewRecord){?>
-    <?= $form->field($model, 'profileImage')->fileInput(); ?>
-    <?php }else {?>
-    <?= $form->field($model, 'profileImage')->fileInput(); ?>
-    <?PHP $image = $getimage->profileImage ;
-    if(!(empty($image))){?>
-    <img src="profileImage/<?php echo $image; ?>" width="90" height="90" />
-   <?php  }else{ ?>
-   <img src="profileImage/c9ad40e3e5f6afb9e2f79688022b1cee.jpg" width="90" height="90" />
- <?php  } }?>
-  
-  
-    </div>
+
 
 <div class="form-group col-lg-6 col-sm-12">
     <?= $form->field($model, 'role')->dropdownList($model->roles,['prompt'=>'Select Role']);?>
     </div>
+     <?php if(yii::$app->controller->action->id == 'create'){?>
+    <div class="form-group col-lg-6 col-sm-12">
+
+    <?= $form->field($model, 'profileImage')->fileInput(); ?>
+    </div>
+    <?php }else{?>
+       <div class="form-group col-lg-6 col-sm-12">
+    	<img class='image' src="<?php if($model->profileImage){
+	echo isset( $model->profileImage)? Url::base().'/'.$model->profileImage : '' ;
+	
+		
+	}else {
+	echo "profileImage/user-iconnew.png" ;
+								     }
+								?>"
+			width="100" height="100">
+
+			  <?= $form->field($model, 'profileImage')->fileInput(); ?>
+			  </div>
+			  <?php }?>
+  <div class="form-group col-lg-6 col-sm-12">
+    <?= $form->field($model, 'status')->dropdownList(['10'=>'Active','0'=>'In-active'],['prompt'=>'Select Status']);?>
+    </div>
+    
 
 <div class="form-group col-lg-6 col-sm-12">
     <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
@@ -66,3 +79,8 @@ use SebastianBergmann\CodeCoverage\Report\PHP;
 </div>
 </div>
 </div>
+<style>
+.help-block {
+    height: 5px;
+}
+</style>

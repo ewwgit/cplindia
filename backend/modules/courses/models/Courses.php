@@ -22,6 +22,7 @@ class Courses extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+	public $sem_name;
     public static function tableName()
     {
         return 'courses';
@@ -33,8 +34,8 @@ class Courses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sem_id', 'name', 'description', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate', 'status'], 'required'],
-            [['sem_id', 'createdBy', 'updatedBy'], 'integer'],
+            [[ 'name', 'description', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate', 'status'], 'required'],
+          //  [['sem_id', 'createdBy', 'updatedBy'], 'integer'],
             [['description', 'status'], 'string'],
             [['createdDate', 'updatedDate'], 'safe'],
             [['name'], 'string', 'max' => 250],
@@ -48,9 +49,9 @@ class Courses extends \yii\db\ActiveRecord
     {
         return [
             'courseId' => 'Course ID',
-            'sem_id' => 'Sem ID',
-            'name' => 'Name',
-            'description' => 'Description',
+            'sem_id' => 'Semester Name',
+            'name' => 'Course Name',
+            'description' => 'Course Description',
             'createdBy' => 'Created By',
             'updatedBy' => 'Updated By',
             'createdDate' => 'Created Date',

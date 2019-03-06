@@ -14,7 +14,19 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
     ];
-    public $js = [
+       public $js = [    		
+    		//'js/modernizr.custom.97074.js',
+    		//'js/bootstrap.min.js',    	
+    		//'js/jquery.hoverdir.js',
+    		'js/jQuery.scrollSpeed.js',
+    		///'js/jquery.flexisel.js',
+    		//'js/cbpAnimatedHeader.js',
+    		//'js/classie.js',
+    		'js/script.js',
+    		'js/jquery.countdown.js',
+    		'js/jquery.countdown.min.js',
+    		//'js/carouseller.min.js',
+    		//'js/html5gallery.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

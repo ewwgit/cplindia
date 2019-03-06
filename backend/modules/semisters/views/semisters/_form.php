@@ -33,7 +33,7 @@ use kartik\date\DatePicker;
     </div>
     <div class="form-group col-lg-6 col-sm-12">
 
-    <?= $form->field($model, 'status')->dropDownList([ 'Active' => 'Active', 'In-active' => 'In-active', ], ['prompt' => 'Select Semister status']) ?>
+    <?= $form->field($model, 'status')->dropDownList([ 'Active' => 'Active', 'In-active' => 'In-active', ], ['prompt' => 'Select Semester status']) ?>
     </div>
 
     <div class="form-group col-lg-6 col-sm-12">

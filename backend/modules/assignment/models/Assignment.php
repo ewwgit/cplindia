@@ -37,12 +37,21 @@ class Assignment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sem_id', 'name', 'description', 'attachmentUrl', 'from_date', 'to_date', 'createdBy', 'updatedBy', 'createdDate', 'updatedDate', 'status'], 'required'],
+            [['sem_id', 'name', 'description', 'from_date', 'to_date', 'status'], 'required'],
+        		[['sem_id', 'name', 'description', 'attachmentUrl', 'from_date', 'to_date', 'status'], 'safe'],
             [['sem_id', 'createdBy', 'updatedBy'], 'integer'],
-            [['description', 'attachmentUrl', 'status'], 'string'],
+            //[['description', 'attachmentUrl', 'status'], 'string'],
             [['from_date', 'to_date', 'createdDate', 'updatedDate'], 'safe'],
+        		
             [['name'], 'string', 'max' => 250],
-        		['attachmentUrl', 'file', 'skipOnEmpty' => true, 'extensions' => 'pdf,docx,doc','maxSize' => 1024 * 1024 * 1],
+        		[['attachmentUrl'], 'required', 'on' => 'create'],
+        	//['attachmentUrl', 'file', 'skipOnEmpty' => true, 'extensions' => 'pdf,docx,doc',],
+        		['attachmentUrl', 'file',
+        		'extensions'=>'pdf,doc,docx',
+        		'wrongExtension'=>'Only {extensions} types are allowed',
+        				'maxSize' => 1024 * 1024 * 2
+        		],
+        		[['from_date', 'to_date'],'validateDate'],
         ];
     }
 
@@ -65,5 +74,14 @@ class Assignment extends \yii\db\ActiveRecord
             'updatedDate' => 'Updated Date',
             'status' => 'Status',
         ];
+    }
+    public function validateDate()
+    {
+    	$fdate = date('Y-m-d', strtotime($this->from_date));
+    	$tdate = date('Y-m-d', strtotime($this->to_date));
+    	if($tdate < $fdate)
+    	{
+    		$this->addError('to_date', 'To date is always greater than from date');
+    	}
     }
 }

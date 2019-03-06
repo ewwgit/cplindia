@@ -48,7 +48,7 @@ class GuestLectures extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-        		'sem_id'=>'Semister Name',
+        		'sem_id'=>'Semester Name',
         		'course_id'=>'Course Name',
             'letureId' => 'Leture ID',
             'topicname' => 'Topicname',

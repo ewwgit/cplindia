@@ -50,8 +50,8 @@ class Semisters extends \yii\db\ActiveRecord
     {
         return [
             'sem_id' => 'Sem ID',
-            'name' => 'Name',
-            'description' => 'Description',
+            'name' => 'Semester Name',
+            'description' => 'Semester Description',
             'from_date' => 'From Date',
             'to_date' => 'To Date',
             'createdBy' => 'Created By',

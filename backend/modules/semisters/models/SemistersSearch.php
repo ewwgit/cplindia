@@ -5,6 +5,7 @@ namespace backend\modules\semisters\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\semisters\models\Semisters;
+use Yii;
 
 /**
  * SemistersSearch represents the model behind the search form of `backend\modules\semisters\models\Semisters`.
@@ -40,7 +41,13 @@ class SemistersSearch extends Semisters
      */
     public function search($params)
     {
-        $query = Semisters::find();
+    	if(Yii::$app->user->identity->role == 4)
+    	{
+        $query = Semisters::find()->where(['status'=>'Active']);
+    	}
+    	else{
+    		$query = Semisters::find();
+    	}
 
         // add conditions that should always apply here
 
